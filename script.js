@@ -1,5 +1,4 @@
 var main=function() {
-
   var canvas=document.getElementById("your_canvas");
 //   canvas.width=window.innerWidth;
 //   canvas.height=window.innerHeight;
@@ -68,6 +67,8 @@ void main () {\n\
     gl_FragColor = vec4(a - k + s * (k + (-1.0 + k)),s * k,k,a);\n\
 }";
 
+  var shader_fragment_source_a10_loaded=getFileText("shaders/a10.frag");
+
   var get_shader=function(source, type, typeString) {
     var shader = gl.createShader(type);
     gl.shaderSource(shader, source);
@@ -80,7 +81,7 @@ void main () {\n\
   };
 
   var shader_vertex=get_shader(shader_vertex_source, gl.VERTEX_SHADER, "VERTEX");
-  var shader_fragment=get_shader(shader_fragment_source_a10, gl.FRAGMENT_SHADER, "FRAGMENT");
+  var shader_fragment=get_shader(shader_fragment_source_a10_loaded, gl.FRAGMENT_SHADER, "FRAGMENT");
 
   var SHADER_PROGRAM=gl.createProgram();
 
@@ -152,4 +153,20 @@ void main () {\n\
   }
   window.addEventListener('resize', resizeCanvas, false);
   resizeCanvas();
+};
+
+var getFileText = function(path) {
+    var XHR = new XMLHttpRequest();
+    XHR.open("GET", path, false);
+
+    if (XHR.overrideMimeType) {
+        XHR.overrideMimeType("text/plain");
+    }
+
+    try {
+        XHR.send(null);
+    } catch(e) {
+        this.println('Error reading file "' + path + '"');
+    }
+    return XHR.responseText;
 };
