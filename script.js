@@ -43,8 +43,6 @@ function get_shader(gl,source, type, typeString) {
 
 function main() {
   var canvas = document.getElementById("main_canvas");
-
-  // GL context
   var gl;
   try {
       gl = canvas.getContext("experimental-webgl", {antialias: true});
@@ -54,10 +52,12 @@ function main() {
   }
   // alert ("gl.SAMPLES == " + gl.getParameter(gl.SAMPLES));
 
+  var frag = "diskHalfSpace"; // "a10";
+
   // Shaders
   var SHADER_PROGRAM = gl.createProgram();
   gl.attachShader(SHADER_PROGRAM, load_shader(gl,"shaders/image.vert"));
-  gl.attachShader(SHADER_PROGRAM, load_shader(gl,"shaders/a10.frag"));
+  gl.attachShader(SHADER_PROGRAM, load_shader(gl,"shaders/"+frag+".frag"));
   gl.linkProgram(SHADER_PROGRAM);
   // Attributes & uniforms
   var _position = gl.getAttribLocation(SHADER_PROGRAM, "position");
@@ -90,7 +90,7 @@ function main() {
   var redraw = function(t) {
       if (_time) {
           gl.uniform1f(_time, t/1000);
-          // queueDraw();
+          queueDraw();
       }
       // gl.clear(gl.COLOR_BUFFER_BIT);
       gl.bindBuffer(gl.ARRAY_BUFFER, TRIANGLE_VERTEX);
@@ -101,9 +101,13 @@ function main() {
   };
   var queueDraw = function() { window.requestAnimationFrame(redraw); }
   var resizeCanvas = function() {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-      gl.viewport(0.0, 0.0, canvas.width, canvas.height);
+      var w = window.innerWidth, h = window.innerHeight;
+      canvas.width = w;
+      canvas.height = h;
+      // gl.viewport(0.0, 0.0, canvas.width, canvas.height);
+      var m = Math.max(w,h);
+      gl.viewport((w-m)/2, (h-m)/2, m,m);
+      // TODO: display scale factor, initially based on w&h.
       queueDraw();
   }
   window.addEventListener('resize', resizeCanvas, false);
