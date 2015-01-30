@@ -1,8 +1,3 @@
-precision mediump float;
-uniform float time;
-uniform float magnify;
-varying vec2 v_position;
-
 void main(void) {
     vec2 pos = v_position / magnify;
     vec2 posM = mod(pos,1.0);

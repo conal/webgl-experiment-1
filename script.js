@@ -1,3 +1,5 @@
+var frag = "a10"; // "diskHalfSpace" "checker"
+
 function get_file_text(path) {
     var XHR = new XMLHttpRequest();
     XHR.open("GET", path, false);
@@ -14,6 +16,8 @@ function get_file_text(path) {
     return XHR.responseText;
 };
 
+var utils_glsl = get_file_text("shaders/utils.glsl") + "\n\n";
+
 function get_extension(path) {
     var ext = path.split('.').pop();
     return (ext == path) ? '' : ext;
@@ -26,7 +30,7 @@ function load_shader(gl,path) {
     case "vert":
         return get_shader(gl,content, gl.VERTEX_SHADER, "vertex");
     case "frag":
-        return get_shader(gl,content, gl.FRAGMENT_SHADER, "fragment");
+        return get_shader(gl,utils_glsl + content, gl.FRAGMENT_SHADER, "fragment");
     }
 }
 
@@ -51,8 +55,6 @@ function main() {
       return false;
   }
   // alert ("gl.SAMPLES == " + gl.getParameter(gl.SAMPLES));
-
-  var frag = "diskHalfSpace"; //"checker" "a10" "diskHalfSpace"
 
   // Shaders
   var SHADER_PROGRAM = gl.createProgram();
