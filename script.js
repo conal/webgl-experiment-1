@@ -14,19 +14,19 @@ function get_file_text(path) {
     return XHR.responseText;
 };
 
-function get_ext(path) {
+function get_extension(path) {
     var ext = path.split('.').pop();
-    return (ext==path) ? '' : ext;
+    return (ext == path) ? '' : ext;
 }
 
 function load_shader(gl,path) {
-    var ext = get_ext(path),
+    var ext = get_extension(path),
         content = get_file_text(path);
     switch (ext) {
     case "vert":
-        return get_shader(gl,content, gl.VERTEX_SHADER, "VERTEX");
+        return get_shader(gl,content, gl.VERTEX_SHADER, "vertex");
     case "frag":
-        return get_shader(gl,content, gl.FRAGMENT_SHADER, "FRAGMENT");
+        return get_shader(gl,content, gl.FRAGMENT_SHADER, "fragment");
     }
 }
 
@@ -35,16 +35,16 @@ function get_shader(gl,source, type, typeString) {
     gl.shaderSource(shader, source);
     gl.compileShader(shader);
     if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
-        alert("ERROR IN "+typeString+ " SHADER :\n" + gl.getShaderInfoLog(shader));
+        alert("ERROR IN "+typeString+ " shader:\n" + gl.getShaderInfoLog(shader));
         return false;
     }
     return shader;
 };
 
 function main() {
-  var canvas=document.getElementById("your_canvas");
+  var canvas = document.getElementById("main_canvas");
 
-  /*========================= GET WEBGL CONTEXT ========================= */
+  // GL context
   var gl;
   try {
       gl = canvas.getContext("experimental-webgl", {antialias: true});
@@ -54,18 +54,12 @@ function main() {
   }
   // alert ("gl.SAMPLES == " + gl.getParameter(gl.SAMPLES));
 
-  /*========================= SHADERS ========================= */
-
-  var shader_vertex=load_shader(gl,"shaders/image.vert");
-  var shader_fragment=load_shader(gl,"shaders/a10.frag");
-
-  var SHADER_PROGRAM=gl.createProgram();
-
-  gl.attachShader(SHADER_PROGRAM, shader_vertex);
-  gl.attachShader(SHADER_PROGRAM, shader_fragment);
-
+  // Shaders
+  var SHADER_PROGRAM = gl.createProgram();
+  gl.attachShader(SHADER_PROGRAM, load_shader(gl,"shaders/image.vert"));
+  gl.attachShader(SHADER_PROGRAM, load_shader(gl,"shaders/a10.frag"));
   gl.linkProgram(SHADER_PROGRAM);
-
+  // Attributes & uniforms
   var _position = gl.getAttribLocation(SHADER_PROGRAM, "position");
   var _time = gl.getUniformLocation(SHADER_PROGRAM, "time");
   // alert("_time == " + _time);
@@ -73,41 +67,27 @@ function main() {
   gl.enableVertexAttribArray(_position);
 
   gl.useProgram(SHADER_PROGRAM);
-  gl.uniform1f(_time, 0.85);
+  // gl.uniform1f(_time, 0.85);
 
-  /*jshint laxcomma: true */
-
-  /*========================= THE TRIANGLE ========================= */
-  //POINTS :
-  var triangle_vertex=[
-    -1,-1, //first summit -> bottom left of the viewport
-    1,-1, //bottom right of the viewport
-    1,1  //top right of the viewport
-    ,-1,1
-  ];
-
-  var TRIANGLE_VERTEX= gl.createBuffer ();
+  // Geometry
+  var TRIANGLE_VERTEX =  gl.createBuffer ();
   gl.bindBuffer(gl.ARRAY_BUFFER, TRIANGLE_VERTEX);
-  gl.bufferData(gl.ARRAY_BUFFER,
-                new Float32Array(triangle_vertex),
-    gl.STATIC_DRAW);
-  var triangle_faces = [0,1,2, 0,2,3];
-
-  var TRIANGLE_FACES= gl.createBuffer ();
+  gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([-1,-1, 1,-1, 1,1, -1,1]),
+                gl.STATIC_DRAW);
+  var TRIANGLE_FACES =  gl.createBuffer();
   gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, TRIANGLE_FACES);
-  gl.bufferData(gl.ELEMENT_ARRAY_BUFFER,
-                new Uint16Array(triangle_faces),
-    gl.STATIC_DRAW);
+  gl.bufferData(gl.ELEMENT_ARRAY_BUFFER,new Uint16Array([0,1,2, 0,2,3]),
+                gl.STATIC_DRAW);
 
-//   gl.enable(gl.BLEND);
-//   gl.blendEquation( gl.FUNC_SUBTRACT );
-//   gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
-//   // gl.disable(gl.DEPTH_TEST);
-
-  /*========================= DRAWING ========================= */
+  /*
+  gl.enable(gl.BLEND);
+  gl.blendEquation( gl.FUNC_SUBTRACT );
+  gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+  gl.disable(gl.DEPTH_TEST);
+  */
   // gl.clearColor(0.0, 0.0, 0.0, 0.0);
 
-  var redraw=function(t) {
+  var redraw = function(t) {
       if (_time) {
           gl.uniform1f(_time, t/1000);
           // queueDraw();
@@ -118,12 +98,11 @@ function main() {
       gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, TRIANGLE_FACES);
       gl.drawElements(gl.TRIANGLES, 6, gl.UNSIGNED_SHORT, 0);
       gl.flush();
-
   };
-  var queueDraw=function() { window.requestAnimationFrame(redraw); }
-  var resizeCanvas=function() {
-      canvas.width=window.innerWidth;
-      canvas.height=window.innerHeight;
+  var queueDraw = function() { window.requestAnimationFrame(redraw); }
+  var resizeCanvas = function() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
       gl.viewport(0.0, 0.0, canvas.width, canvas.height);
       queueDraw();
   }
