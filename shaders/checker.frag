@@ -1,7 +1,5 @@
-void main(void) {
-    vec2 pos = v_position / magnify;
+vec4 effect (vec2 pos) {
+    // pos = rotate2(time,pos);
     vec2 posM = mod(pos,1.0);
-    bool b = posM.x < 0.5 ^^ posM.y < 0.5;
-    float q = b?1.0:0.0;
-    gl_FragColor = vec4(q,q,q,1);
+    return bw(posM.x < 0.5 ^^ posM.y < 0.5);
 }
