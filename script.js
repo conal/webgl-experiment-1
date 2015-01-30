@@ -1,4 +1,4 @@
-var frag = "diskChecker1"; // "checker" "diskHalfSpace" "a10"
+var frag = "diskHalfSpace"; // "checker" "diskChecker1" "a10"
 
 function get_file_text(path) {
     var XHR = new XMLHttpRequest();

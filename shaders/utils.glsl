@@ -10,6 +10,15 @@ vec4 gray (float q) { return vec4(q,q,q,1); }
 
 vec4 bw (bool b) { return gray(b?1.0:0.0); }
 
+bool checker (vec2 p) {
+    vec2 posM = mod(p,2.0);
+    return posM.x < 1.0 ^^ posM.y < 1.0;
+}
+
+bool disk (vec2 p) { return (length(p) < 1.); }
+
+//
+
 uniform float time;
 uniform float magnify;
 varying vec2 v_position;
