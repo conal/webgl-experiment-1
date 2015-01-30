@@ -52,7 +52,7 @@ function main() {
   }
   // alert ("gl.SAMPLES == " + gl.getParameter(gl.SAMPLES));
 
-  var frag = "diskHalfSpace"; // "a10";
+  var frag = "diskHalfSpace"; //"checker" "a10" "diskHalfSpace"
 
   // Shaders
   var SHADER_PROGRAM = gl.createProgram();
@@ -63,6 +63,7 @@ function main() {
   var _position = gl.getAttribLocation(SHADER_PROGRAM, "position");
   var _time = gl.getUniformLocation(SHADER_PROGRAM, "time");
   // alert("_time == " + _time);
+  var _magnify = gl.getUniformLocation(SHADER_PROGRAM, "magnify");
 
   gl.enableVertexAttribArray(_position);
 
@@ -105,9 +106,9 @@ function main() {
       canvas.width = w;
       canvas.height = h;
       // gl.viewport(0.0, 0.0, canvas.width, canvas.height);
-      var m = Math.max(w,h);
-      gl.viewport((w-m)/2, (h-m)/2, m,m);
-      // TODO: display scale factor, initially based on w&h.
+      var mi = Math.min(w,h), ma = Math.max(w,h);
+      gl.viewport((w-ma)/2, (h-ma)/2, ma,ma);
+      gl.uniform1f(_magnify, mi/ma);
       queueDraw();
   }
   window.addEventListener('resize', resizeCanvas, false);

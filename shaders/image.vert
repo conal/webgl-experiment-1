@@ -1,8 +1,7 @@
 attribute vec2 position;
-varying vec2 vPos;
+varying vec2 v_position;
 
 void main(void) {
     gl_Position = vec4(position, 0., 1.);
-    vPos = position;
+    v_position = position;
 }
-
