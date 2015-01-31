@@ -7,7 +7,6 @@ vec2 rotate(float theta, vec2 p) {
 }
 
 vec4 gray (float q) { return vec4(q,q,q,1); }
-
 vec4 bw (bool b) { return gray(b?1.0:0.0); }
 
 bool checker (vec2 p) {
@@ -23,14 +22,12 @@ bool checker (vec2 p,float frac) {
 bool posX (vec2 p) { return p.x > 0.0; }
 
 bool disk (vec2 p) { return (length(p) < 1.); }
-
 bool disk (vec2 p, float radius, vec2 center) { return disk((p-center)/radius); }
-
 bool disk (vec2 p, float radius) { return disk(p/radius); }
 
 // bool disk (vec2 p, float radius) { return disk(p,radius,vec2(0.0,0.0)); }
 
-//
+// -----------------
 
 const float pi = 3.14159265358979;
 const float twoPi = 2.0*pi;
