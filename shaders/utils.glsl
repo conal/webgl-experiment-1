@@ -1,7 +1,7 @@
 // Misc common definitions
 precision mediump float;
 
-vec2 rotate2(float theta, vec2 p) {
+vec2 rotate(float theta, vec2 p) {
     float c = cos(theta), s = sin(theta);
     return vec2(p.x * c - p.y * s, p.x * s + p.y * c);
 }
@@ -13,6 +13,11 @@ vec4 bw (bool b) { return gray(b?1.0:0.0); }
 bool checker (vec2 p) {
     vec2 posM = mod(p,2.0);
     return posM.x < 1.0 ^^ posM.y < 1.0;
+}
+
+bool checker (vec2 p,float frac) {
+    vec2 posM = mod(p,1.0);
+    return posM.x < frac ^^ posM.y < frac;
 }
 
 bool posX (vec2 p) { return p.x > 0.0; }
