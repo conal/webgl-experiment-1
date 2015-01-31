@@ -47,7 +47,7 @@ function main() {
   var canvas = document.getElementById("main_canvas");
   var gl;
   try {
-      gl = canvas.getContext("experimental-webgl", {antialias: true});
+      gl = canvas.getContext("webgl", {antialias: true});
   } catch (e) {
       alert("You are not webgl compatible :(") ;
       return false;
@@ -74,8 +74,16 @@ function main() {
 
   // Attributes & uniforms
   var _position, _time, _magnify;
-  var choose_demo = function (frag) {
-      var program = gl.createProgram();
+  var program = null;
+  var choose_effect = function (frag) {
+      console.log("choose_effect: " + frag);
+      // console.log("program == " + program);
+      /* Try to clean up from previous effect. I don't know whether
+         this step is necessary or sufficient. I still see the old
+         programs in Firefox's Shader Editor.
+      */
+      if (program) gl.deleteProgram(program);
+      program = gl.createProgram();
       gl.attachShader(program, load_shader(gl,"shaders/image.vert"));
       gl.attachShader(program, load_shader(gl,"shaders/"+frag+".frag"));
       gl.linkProgram(program);
@@ -119,8 +127,7 @@ function main() {
 
   var menu = document.getElementById("shader_menu");
   menu.onchange = function () {
-      // console.log("Selected " + this.value);
-      choose_demo(this.value);
+      choose_effect(this.value);
   };
   menu.onchange();
   resize_canvas();
