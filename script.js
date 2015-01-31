@@ -44,7 +44,7 @@ function get_shader(gl,source, type, typeString) {
 };
 
 function main() {
-  var canvas = document.getElementById("main_canvas");
+  var canvas = document.getElementById("effect_canvas");
   var gl;
   try {
       gl = canvas.getContext("webgl", {antialias: true});
@@ -76,7 +76,7 @@ function main() {
   var _position, _time, _magnify;
   var program = null;
   var choose_effect = function (frag) {
-      console.log("choose_effect: " + frag);
+      // console.log("choose_effect: " + frag);
       // console.log("program == " + program);
       /* Try to clean up from previous effect. I don't know whether
          this step is necessary or sufficient. I still see the old
@@ -123,9 +123,10 @@ function main() {
       gl.uniform1f(_magnify, mi/ma);
       queue_draw();
   }
-  window.addEventListener('resize', resize_canvas, false);
+  window.onresize = resize_canvas;
+  // window.addEventListener('resize', resize_canvas, false);
 
-  var menu = document.getElementById("shader_menu");
+  var menu = document.getElementById("effect_menu");
   menu.onchange = function () {
       choose_effect(this.value);
   };
