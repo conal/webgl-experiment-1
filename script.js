@@ -97,7 +97,7 @@ function main() {
 
       gl.useProgram(program);
       // Resize to set the new "magnify" uniform.
-      resize_canvas();
+      window.onresize();
   };
 
   var redraw = function(t) {
@@ -113,23 +113,19 @@ function main() {
       gl.flush();
   };
   var queue_draw = function() { window.requestAnimationFrame(redraw); }
-  var resize_canvas = function() {
+  window.onresize = function() {
       var w = window.innerWidth, h = window.innerHeight;
       canvas.width = w;
       canvas.height = h;
-      // gl.viewport(0.0, 0.0, canvas.width, canvas.height);
       var mi = Math.min(w,h), ma = Math.max(w,h);
       gl.viewport((w-ma)/2, (h-ma)/2, ma,ma);
       gl.uniform1f(_magnify, mi/ma);
       queue_draw();
   }
-  window.onresize = resize_canvas;
-  // window.addEventListener('resize', resize_canvas, false);
-
   var menu = document.getElementById("effect_menu");
   menu.onchange = function () {
       choose_effect(this.value);
   };
   menu.onchange();
-  resize_canvas();
+  window.onresize();
 };
