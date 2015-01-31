@@ -1,5 +1,3 @@
-var frag = "checker"; // "diskChecker/1" "checker" "diskHalfSpace" "a10"
-
 function get_file_text(path) {
     var XHR = new XMLHttpRequest();
     XHR.open("GET", path, false);
@@ -56,22 +54,6 @@ function main() {
   }
   // alert ("gl.SAMPLES == " + gl.getParameter(gl.SAMPLES));
 
-  // Shaders
-  var SHADER_PROGRAM = gl.createProgram();
-  gl.attachShader(SHADER_PROGRAM, load_shader(gl,"shaders/image.vert"));
-  gl.attachShader(SHADER_PROGRAM, load_shader(gl,"shaders/"+frag+".frag"));
-  gl.linkProgram(SHADER_PROGRAM);
-  // Attributes & uniforms
-  var _position = gl.getAttribLocation(SHADER_PROGRAM, "position");
-  var _time = gl.getUniformLocation(SHADER_PROGRAM, "time");
-  // alert("_time == " + _time);
-  var _magnify = gl.getUniformLocation(SHADER_PROGRAM, "magnify");
-
-  gl.enableVertexAttribArray(_position);
-
-  gl.useProgram(SHADER_PROGRAM);
-  // gl.uniform1f(_time, 0.85);
-
   // Geometry
   var TRIANGLE_VERTEX =  gl.createBuffer ();
   gl.bindBuffer(gl.ARRAY_BUFFER, TRIANGLE_VERTEX);
@@ -90,10 +72,30 @@ function main() {
   */
   // gl.clearColor(0.0, 0.0, 0.0, 0.0);
 
+  // Attributes & uniforms
+  var _position, _time, _magnify;
+  var choose_demo = function (frag) {
+      var program = gl.createProgram();
+      gl.attachShader(program, load_shader(gl,"shaders/image.vert"));
+      gl.attachShader(program, load_shader(gl,"shaders/"+frag+".frag"));
+      gl.linkProgram(program);
+      // Attributes & uniforms
+      _position = gl.getAttribLocation(program, "position");
+      _time = gl.getUniformLocation(program, "time");
+      if (!_time) console.log("non-animated");
+      _magnify = gl.getUniformLocation(program, "magnify");
+
+      gl.enableVertexAttribArray(_position);
+
+      gl.useProgram(program);
+      // Resize to set the new "magnify" uniform.
+      resize_canvas();
+  };
+
   var redraw = function(t) {
       if (_time) {
           gl.uniform1f(_time, t/1000);
-          queueDraw();
+          queue_draw();
       }
       // gl.clear(gl.COLOR_BUFFER_BIT);
       gl.bindBuffer(gl.ARRAY_BUFFER, TRIANGLE_VERTEX);
@@ -102,8 +104,8 @@ function main() {
       gl.drawElements(gl.TRIANGLES, 6, gl.UNSIGNED_SHORT, 0);
       gl.flush();
   };
-  var queueDraw = function() { window.requestAnimationFrame(redraw); }
-  var resizeCanvas = function() {
+  var queue_draw = function() { window.requestAnimationFrame(redraw); }
+  var resize_canvas = function() {
       var w = window.innerWidth, h = window.innerHeight;
       canvas.width = w;
       canvas.height = h;
@@ -111,8 +113,15 @@ function main() {
       var mi = Math.min(w,h), ma = Math.max(w,h);
       gl.viewport((w-ma)/2, (h-ma)/2, ma,ma);
       gl.uniform1f(_magnify, mi/ma);
-      queueDraw();
+      queue_draw();
   }
-  window.addEventListener('resize', resizeCanvas, false);
-  resizeCanvas();
+  window.addEventListener('resize', resize_canvas, false);
+
+  var menu = document.getElementById("shader_menu");
+  menu.onchange = function () {
+      // console.log("Selected " + this.value);
+      choose_demo(this.value);
+  };
+  menu.onchange();
+  resize_canvas();
 };
