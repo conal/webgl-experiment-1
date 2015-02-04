@@ -21,14 +21,25 @@
       <option>diskChecker/2</option>
       <option>diskChecker/3</option>
       <option>diskChecker/4</option>
-      <option selected="selected">diskChecker/5</option>
+      <option>diskChecker/5</option>
       <option>diskChecker/6</option>
       <option>diskChecker/7</option>
       <option>diskChecker/8</option>
       <option>diskChecker/9</option>
     </select>
-    <canvas id="effect_canvas" style="background-color:green"></canvas>
+    <canvas id="effect_canvas" style="background-color:green">diskChecker/5</canvas>
   <script>
+
+function main() {
+    var canvas = document.getElementById("effect_canvas");
+    install_effect(canvas);
+    window.onresize = function() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        canvas.onresize();
+    };
+    window.onresize();
+}
 
   </script>
 

@@ -44,8 +44,8 @@ function get_shader(gl,source, type, typeString) {
     return shader;
 };
 
-function main() {
-  var canvas = document.getElementById("effect_canvas");
+function install_effect(canvas) {
+  var effect = canvas.innerHTML;
   var gl;
   try {
       gl = canvas.getContext("webgl", {antialias: true,alpha:false});
@@ -109,7 +109,7 @@ function main() {
       gl.useProgram(program);
       panX = 0; panY = 0;
       // Resize to set pan & zoom uniforms.
-      window.onresize();
+      canvas.onresize();
       tweak_pan(0,0);
   };
 
@@ -128,10 +128,9 @@ function main() {
   };
   var queue_draw = function() { window.requestAnimationFrame(redraw); }
   var pixel_size; // in GL units
-  window.onresize = function() {
-      var w = window.innerWidth, h = window.innerHeight;
-      canvas.width = w;
-      canvas.height = h;
+
+  canvas.onresize = function () {
+      var w = canvas.width, h = canvas.height;
       var mi = Math.min(w,h), ma = Math.max(w,h);
       gl.viewport((w-ma)/2, (h-ma)/2, ma,ma);
       gl.uniform1f(_zoom, mi/ma);
@@ -139,12 +138,14 @@ function main() {
       // console.log("zoom == " + mi/ma + "; pixel_size == " + pixel_size);
       queue_draw();
   }
+
   var menu = document.getElementById("effect_menu");
   menu.onchange = function () {
       choose_effect(this.value);
   };
+  menu.value = effect; // "diskHalfSpace"; // checker, ...
   menu.onchange();
-  // window.onresize();
+  // canvas.onresize();
   // I tried event.movementX and event.movementY, but got undefined.
   // jQuery might help.
   var dragging = false;
@@ -164,14 +165,4 @@ function main() {
           prevX=x; prevY=y;
       }
   };
-
-//   // Broken in firefox? Use jQuery.
-//   canvas.draggable = true;
-//   canvas.ondragstart = function (event) { console.log("drag start") };
-//   canvas.ondrag = function (event) { console.log("drag") };
-
-  window.onscroll = function () {
-      console.log("scroll: " + window.pageXOffset + " " + window.pageYOffset);
-  }
-
 };
