@@ -6,7 +6,11 @@ vec2 rotate(float theta, vec2 p) {
     return vec2(p.x * c - p.y * s, p.x * s + p.y * c);
 }
 
-vec4 gray (float q) { return vec4(q,q,q,1); }
+// vec4 gray (float q) { return vec4(q,q,q,1.0); }
+vec4 gray (float q) {
+    const float alpha = 1.0;
+    return vec4(alpha*q,alpha*q,alpha*q,alpha);
+}
 vec4 bw (bool b) { return gray(b?1.0:0.0); }
 
 bool checker (vec2 p) {
@@ -33,9 +37,11 @@ const float pi = 3.14159265358979;
 const float twoPi = 2.0*pi;
 
 uniform float time;
-uniform float magnify;
+uniform float zoom;
+uniform vec2 pan;
 varying vec2 v_position;
 
 vec4 effect (vec2 p);
 
-void main () { gl_FragColor = effect(v_position / magnify); }
+// void main () { gl_FragColor = effect(v_position / zoom - pan); }
+void main () { gl_FragColor = effect((v_position - pan) / zoom); }
