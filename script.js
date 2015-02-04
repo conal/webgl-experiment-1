@@ -6,7 +6,7 @@ function get_file_text(path) {
     }
     try {
         XHR.send(null);
-    } catch(e) {
+    } catch (e) {
         this.println('Error reading file "' + path + '"');
     }
     if (!XHR.responseText)
@@ -30,6 +30,7 @@ function load_shader(gl,path) {
     case "frag":
         return get_shader(gl,utils_glsl + content, gl.FRAGMENT_SHADER, "fragment");
     }
+    alert("load_shader: unknown extension "+ext);
 }
 
 function get_shader(gl,source, type, typeString) {
@@ -47,7 +48,7 @@ function main() {
   var canvas = document.getElementById("effect_canvas");
   var gl;
   try {
-      gl = canvas.getContext("webgl", {antialias: true});
+      gl = canvas.getContext("webgl", {antialias: true,alpha:false});
   } catch (e) {
       alert("You are not webgl compatible :(") ;
       return false;
@@ -64,16 +65,27 @@ function main() {
   gl.bufferData(gl.ELEMENT_ARRAY_BUFFER,new Uint16Array([0,1,2, 0,2,3]),
                 gl.STATIC_DRAW);
 
-  /*
-  gl.enable(gl.BLEND);
-  gl.blendEquation( gl.FUNC_SUBTRACT );
-  gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+  // I want to experiment with blending for cheap temporal and
+  // spatial antialiasing.
   gl.disable(gl.DEPTH_TEST);
+  gl.enable(gl.BLEND);
+  gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+  /*
+  gl.blendEquation( gl.FUNC_SUBTRACT );
   */
-  // gl.clearColor(0.0, 0.0, 0.0, 0.0);
+  gl.clearColor(1.0, 0.0, 0.0, 0.0);
 
-  // Attributes & uniforms
-  var _position, _time, _magnify;
+  var panX,panY;
+  var tweak_pan = function(moveX,moveY) { // in pixels
+//       console.log("pan was (" + panX + "," + panY + ")" );
+      panX += moveX * pixel_size;
+      panY += moveY * pixel_size;
+//       console.log("pan = (" + panX + "," + panY + ")" );
+      gl.uniform2f(_pan,panX,panY);
+      queue_draw();
+  }
+
+  var _position, _time, _zoom, _pan; // Attributes & uniforms
   var program = null;
   var choose_effect = function (frag) {
       // console.log("choose_effect: " + frag);
@@ -91,13 +103,14 @@ function main() {
       _position = gl.getAttribLocation(program, "position");
       _time = gl.getUniformLocation(program, "time");
       if (!_time) console.log("non-animated");
-      _magnify = gl.getUniformLocation(program, "magnify");
-
+      _zoom = gl.getUniformLocation(program, "zoom");
+      _pan  = gl.getUniformLocation(program, "pan");
       gl.enableVertexAttribArray(_position);
-
       gl.useProgram(program);
-      // Resize to set the new "magnify" uniform.
+      panX = 0; panY = 0;
+      // Resize to set pan & zoom uniforms.
       window.onresize();
+      tweak_pan(0,0);
   };
 
   var redraw = function(t) {
@@ -106,20 +119,24 @@ function main() {
           queue_draw();
       }
       // gl.clear(gl.COLOR_BUFFER_BIT);
+      // gl.clear(0);
       gl.bindBuffer(gl.ARRAY_BUFFER, TRIANGLE_VERTEX);
       gl.vertexAttribPointer(_position, 2, gl.FLOAT, false,4*2,0) ;
       gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, TRIANGLE_FACES);
       gl.drawElements(gl.TRIANGLES, 6, gl.UNSIGNED_SHORT, 0);
-      gl.flush();
+      // gl.flush();
   };
   var queue_draw = function() { window.requestAnimationFrame(redraw); }
+  var pixel_size; // in GL units
   window.onresize = function() {
       var w = window.innerWidth, h = window.innerHeight;
       canvas.width = w;
       canvas.height = h;
       var mi = Math.min(w,h), ma = Math.max(w,h);
       gl.viewport((w-ma)/2, (h-ma)/2, ma,ma);
-      gl.uniform1f(_magnify, mi/ma);
+      gl.uniform1f(_zoom, mi/ma);
+      pixel_size = 2/ma;
+      // console.log("zoom == " + mi/ma + "; pixel_size == " + pixel_size);
       queue_draw();
   }
   var menu = document.getElementById("effect_menu");
@@ -127,5 +144,34 @@ function main() {
       choose_effect(this.value);
   };
   menu.onchange();
-  window.onresize();
+  // window.onresize();
+  // I tried event.movementX and event.movementY, but got undefined.
+  // jQuery might help.
+  var dragging = false;
+  var prevX, prevY;
+  canvas.onmousedown = function (event) {
+      dragging = true;
+      prevX = event.clientX; prevY = event.clientY;
+      // console.log("down"); 
+  };
+  canvas.onmouseup = function (event) { dragging = false; /* console.log("up"); */ };
+  canvas.onmousemove = function (event) {
+      if (dragging) {
+          var x = event.clientX, y = event.clientY;
+          var dx = x-prevX, dy= prevY-y;  // note y inversion
+          // console.log("delta = (" + dx + "," + dy + ")" );
+          tweak_pan(dx,dy);
+          prevX=x; prevY=y;
+      }
+  };
+
+//   // Broken in firefox? Use jQuery.
+//   canvas.draggable = true;
+//   canvas.ondragstart = function (event) { console.log("drag start") };
+//   canvas.ondrag = function (event) { console.log("drag") };
+
+  window.onscroll = function () {
+      console.log("scroll: " + window.pageXOffset + " " + window.pageYOffset);
+  }
+
 };
