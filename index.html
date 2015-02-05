@@ -4,31 +4,26 @@
     <meta charset="utf-8"/>
     <script type="text/javascript" src="script.js"></script>
     <style>
-       canvas { /* height:100px;width:100px; */ background-color:red; border:2px solid black; }
+       canvas {
+         background-color:red; border:2px solid black; margin-left:2px; margin-right:2px;
+       }
        body { background-color:yellow }
     </style>
   </head>
-  <body onload="main()">
-    <canvas effect="checker"></canvas>
-    <canvas effect="diskHalfSpace"></canvas>
-    <canvas effect="diskChecker/1"></canvas>
-    <canvas effect="diskChecker/2"></canvas>
-    <canvas effect="diskChecker/3"></canvas>
-    <canvas effect="diskChecker/4"></canvas>
-    <canvas effect="diskChecker/5"></canvas>
-    <canvas effect="diskChecker/6"></canvas>
-    <canvas effect="diskChecker/7"></canvas>
-    <canvas effect="diskChecker/8"></canvas>
-    <canvas effect="diskChecker/9"></canvas>
-  </body>
+  <body onload="main()"></body>
+</html>
 
 <script type="text/javascript">
-  // To do: use jQuery; generate canvases from string list.
+  // To do: use jQuery
+  var effects = ["checker", "diskHalfSpace", "diskChecker/1", "diskChecker/2",
+                 "diskChecker/3", "diskChecker/4", "diskChecker/5",
+                 "diskChecker/6","diskChecker/7", "diskChecker/8", "diskChecker/9"];
   function main() {
-    var canvases = document.getElementsByTagName("canvas");
-    for (var i = 0; i < canvases.length; i++) {
-        var c = canvases[i];
-        var effect = c.getAttribute("effect");
+    var body = document.getElementsByTagName("body")[0];
+    for (var i = 0; i < effects.length; i++) {
+        var c = document.createElement("canvas");
+        body.appendChild(c);
+        var effect = effects[i];
         // console.log("Effect #"+i+": "+effect);
         if (effect) {
           c.height=200; c.width=200;
@@ -37,6 +32,4 @@
     }
   }
 </script>
-
-</html>
 
