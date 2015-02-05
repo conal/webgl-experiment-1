@@ -45,7 +45,6 @@ function get_shader(gl,source, type, typeString) {
 };
 
 function install_effect(canvas) {
-  var effect = canvas.innerHTML;
   var gl;
   try {
       gl = canvas.getContext("webgl", {antialias: true,alpha:false});
@@ -131,6 +130,7 @@ function install_effect(canvas) {
 
   canvas.onresize = function () {
       var w = canvas.width, h = canvas.height;
+      // console.log("canvas size == ",[w,h]);
       var mi = Math.min(w,h), ma = Math.max(w,h);
       gl.viewport((w-ma)/2, (h-ma)/2, ma,ma);
       gl.uniform1f(_zoom, mi/ma);
@@ -138,13 +138,7 @@ function install_effect(canvas) {
       // console.log("zoom == " + mi/ma + "; pixel_size == " + pixel_size);
       queue_draw();
   }
-
-  var menu = document.getElementById("effect_menu");
-  menu.onchange = function () {
-      choose_effect(this.value);
-  };
-  menu.value = effect; // "diskHalfSpace"; // checker, ...
-  menu.onchange();
+  choose_effect(canvas.innerHTML);
   // canvas.onresize();
   // I tried event.movementX and event.movementY, but got undefined.
   // jQuery might help.
