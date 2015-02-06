@@ -101,7 +101,7 @@ function install_effect(canvas,effect) {
         // Attributes & uniforms
         _position = gl.getAttribLocation(program, "position");
         _time = gl.getUniformLocation(program, "time");
-        if (!_time) console.log("non-animated");
+        // if (!_time) console.log("non-animated");
         _zoom = gl.getUniformLocation(program, "zoom");
         _pan  = gl.getUniformLocation(program, "pan");
         gl.enableVertexAttribArray(_position);
