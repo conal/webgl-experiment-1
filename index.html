@@ -21,17 +21,20 @@
   var effects = ["checker", 
                  "diskHalfSpace", "diskChecker/1", "diskChecker/2",
                  "diskChecker/3", "diskChecker/4", "diskChecker/5",
-                 "diskChecker/6","diskChecker/7", "diskChecker/8",
+                 "diskChecker/6", "diskChecker/7", "diskChecker/8",
                  "diskChecker/9"
                  ];
   function main() {
     // Add effect thumbnail canvases, each wrapped in a hyperlink.
     // For simplicity and efficiency, add in bulk.
+    var master = $("<canvas width=150 height=150/>"); // to be cloned
+    var effectCanvas = function (effect) {
+      var c = master.clone();
+      install_effect(c[0],effect);
+      return c;
+    }
     $("body").append($.map(effects,function(effect,_i) {
-        // console.log("Effect #"+i+": "+effect);
-        var c = $("<canvas width=150 height=150/>"); // todo: once & clone
-        install_effect(c[0],effect);
-        return $("<a href=effect.html?"+effect+"></a>").append(c);
+        return $("<a href=effect.html?"+effect+"></a>").html(effectCanvas(effect));
     }));
   }
 </script>
