@@ -2,17 +2,10 @@
 <html>
   <head>
     <meta charset="utf-8"/>
-    <!--
-    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
-    -->
-    <script src="jquery.min.js"></script>
     <script type="text/javascript" src="script.js"></script>
-    <style>
-       }
-    </style>
   </head>
   <body style="margin:0px" onload="main()">
-    <canvas id="effect_canvas" style="background-color:green"></canvas>
+    <canvas></canvas>
   </body>
 
   <script>
@@ -20,7 +13,7 @@ function main() {
     var effect = location.search.slice(1);
     document.title = effect;
     // console.log("effect: " + effect);
-    var canvas = document.getElementById("effect_canvas");
+    var canvas = document.getElementsByTagName("canvas")[0];
     install_effect(canvas,effect);
     window.onresize = function() {
         canvas.width = window.innerWidth;
