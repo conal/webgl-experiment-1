@@ -2,6 +2,10 @@
 <html>
   <head>
     <meta charset="utf-8"/>
+    <!--
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+    -->
+    <script src="jquery.min.js"></script>
     <script type="text/javascript" src="script.js"></script>
     <style>
        canvas {
@@ -14,27 +18,20 @@
 </html>
 
 <script type="text/javascript">
-  // To do: use jQuery
-  var effects = ["checker", "diskHalfSpace", "diskChecker/1", "diskChecker/2",
-                 "diskChecker/3", "diskChecker/4", "diskChecker/5",
-                 "diskChecker/6","diskChecker/7", "diskChecker/8", "diskChecker/9"];
+  var effects = ["checker", 
+                 "diskHalfSpace", "diskChecker/1", "diskChecker/2",
+                 // "diskChecker/3", "diskChecker/4", "diskChecker/5",
+                 // "diskChecker/6","diskChecker/7", "diskChecker/8",
+                 // "diskChecker/9"
+                 ];
   function main() {
     // Add effect thumbnail canvases, each wrapped in a hyperlink
-    var body = document.getElementsByTagName("body")[0];
-    for (var i = 0; i < effects.length; i++) {
-        var effect = effects[i];
+    $.each(effects,function(_i,effect) {
         // console.log("Effect #"+i+": "+effect);
-        var c = document.createElement("canvas");
-        c.height=150; c.width=150;
-        install_effect(c,effect);
-        var a = document.createElement("a");
-        var href = document.createAttribute("href");
-        href.value = "effect.html?" + effect;
-        a.setAttributeNode(href);
-        a.appendChild(c);
-        body.appendChild(a);
-    }
+        var c = $("<canvas width=150 height=150/>");
+        install_effect(c[0],effect);
+        $("body").append($("<a href=effect.html?"+effect+"></a>").append(c));
+    });
   }
-
 </script>
 
