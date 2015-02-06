@@ -5,7 +5,7 @@
     <script type="text/javascript" src="script.js"></script>
     <style>
        canvas {
-         background-color:red; border:2px solid black; margin-left:2px; margin-right:2px;
+         background-color:red; border:2px solid black; margin-left:1px; margin-right:1px;
        }
        body { background-color:yellow }
     </style>
@@ -19,17 +19,22 @@
                  "diskChecker/3", "diskChecker/4", "diskChecker/5",
                  "diskChecker/6","diskChecker/7", "diskChecker/8", "diskChecker/9"];
   function main() {
+    // Add effect thumbnail canvases, each wrapped in a hyperlink
     var body = document.getElementsByTagName("body")[0];
     for (var i = 0; i < effects.length; i++) {
-        var c = document.createElement("canvas");
-        body.appendChild(c);
         var effect = effects[i];
         // console.log("Effect #"+i+": "+effect);
-        if (effect) {
-          c.height=200; c.width=200;
-          install_effect(c,effect);
-        }
+        var c = document.createElement("canvas");
+        c.height=150; c.width=150;
+        install_effect(c,effect);
+        var a = document.createElement("a");
+        var href = document.createAttribute("href");
+        href.value = "effect.html?" + effect;
+        a.setAttributeNode(href);
+        a.appendChild(c);
+        body.appendChild(a);
     }
   }
+
 </script>
 
