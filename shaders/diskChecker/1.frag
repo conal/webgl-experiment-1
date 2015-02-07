@@ -1,6 +1,8 @@
+uniform float radius;  // slider: 1.0, 0, 3
+uniform float offset;  // slider: 1.0, 0, 2
 vec4 effect (vec2 p) {
-    p = 2.0 * p;
     float t = 2.0*time;
-    vec2 center = rotate(t,vec2(0.5,0));
-    return bw (disk(p,1.0,center) ^^ checker(2.*p));
+    vec2 center = rotate(t,vec2(offset,0));
+    return bw (disk(p,radius,center) ^^ checker(2.*p));
 }
+

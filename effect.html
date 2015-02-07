@@ -16,12 +16,17 @@
            position:fixed;
            width: 250px;
            top:20px;right:50px;
-           font-size:150%;
-           padding:5px;padding-bottom:10px;
-           background:rgba(200,200,255,0.5);
+           padding:5px;padding-bottom:15px;
+           background: rgba(255,255,200,0.75);
+           border-radius: 7px;
        }
-       canvas { z-index: -1; } // below GUI
-       // div.ui-slider-horizontal { width: 3px !important; } // Doesn't work. Hm.
+       canvas { z-index: -1; } /* below GUI */
+       .ui-slider-horizontal { height: 0.25em; }
+       .ui-slider .ui-slider-handle { height: 1em; top: -.4em; }
+       .slider-label { font-size:140%; color: rgba(20,20,255,0.85);
+           padding-left:5px; padding-top: 3px; padding-bottom:3px;
+           text-align: right; margin-right:0.5em; }
+
     </style>
   </head>
   <body style="margin:0px"> <div class=gui></div> </body>
@@ -34,7 +39,12 @@
         // console.log("effect: " + effect);
         var canvas = $("<canvas/>")[0];
         $("body").append(canvas);
-        $(".gui").append(install_effect(canvas,effect));
+        var widgets = install_effect(canvas,effect);
+        if (widgets.length > 0)
+           $(".gui").append(widgets);
+        else
+           $(".gui").remove();
+        // TODO: conditionally add instead of remove.
         $(window).resize (function() {
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;

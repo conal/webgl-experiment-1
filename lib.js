@@ -202,19 +202,19 @@ function extract_sliders(shader_source) {
 
 function render_slider(gl,program,slider) {
     // console.log("render_slider: ");console.dir(slider);
-    var slider_div = $("<div/>");
+    var slider_div = $("<div></div>");
     var scale = (slider.max - slider.min) / 10000;
     var location = gl.getUniformLocation(program, slider.param);
     function set (val) { gl.uniform1f(location, val); }
     set(slider.start);
     slider_div.slider({ min: 0, max: 10000,
-                       value: (slider.start - slider.min) / scale,
-                       slide: function (event,ui) {
-                                  console.log("slide "+slider.param);
-                                  set(slider.min + ui.value*scale);
-                              }
-                       });
-    slider_div.height("3px"); // My CSS tweak didn't work
-    slider_div.children().css({"top":"-8px","height":"18px","width":"18px"});
-    return $("<div>"+slider.param+"</div>").append(slider_div);
+                        value: (slider.start - slider.min) / scale,
+                        slide: function (_event,ui) {
+                                   // console.log("slide "+slider.param);
+                                   set(slider.min + ui.value*scale);
+                               }
+                      });
+    // slider_div.height("3px"); // My CSS tweak didn't work
+    // slider_div.children().css({"top":"-8px","height":"18px","width":"18px"});
+    return $("<div class=slider-and-label><div class=slider-label>"+slider.param+"</div></div>").append(slider_div);
 }
