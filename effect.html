@@ -32,7 +32,8 @@
         // console.log("effect: " + effect);
         var canvas = $("<canvas/>")[0];
         var sliders = install_effect(canvas,effect);
-        $(".gui").append(render_sliders(sliders));
+        $(".gui").append($.map(sliders,function (slider) {
+             return slider.render(); }));
         $("body").append(canvas);
         $(window).resize (function() {
             canvas.width = window.innerWidth;

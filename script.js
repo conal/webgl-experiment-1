@@ -52,6 +52,7 @@ function get_shader(gl,source, type, typeString) {
         alert("ERROR IN "+typeString+ " shader:\n" + gl.getShaderInfoLog(shader));
         return false;
     }
+    console.dir(shader);
     return shader;
 };
 
@@ -125,6 +126,8 @@ function install_effect(canvas,effect) {
         // Find and initialize the slider parameter locations
         var sliders = frag.sliders;
         // console.log("sliders: "); console.dir(sliders);
+        // TODO: Move to sliders construction, which requires access to the program.
+        // Perhaps return the shader source instead of sliders from load_shader.
         $.each(sliders,function (_i,slider) {
                 // console.log("slider: ");console.dir(slider);
                 slider.location = gl.getUniformLocation(program, slider.param);
@@ -195,16 +198,14 @@ function extract_sliders(shader_source) {
     slider_regexp.lastIndex = 0;
     do {
         match = slider_regexp.exec(shader_source);
-        if (match)
-            results.push({ param: match[1], start: match[2], min: match[3], max: match[4] });
+        if (match) {
+            var param = match[1], start = match[2], min = match[3], max = match[4];
+            results.push({ param: param, start: start, min: min, max: max,
+                           render: function () { return $("<div>"+param+"</div>"); }
+                });
+        }
     } while (match);
-    // console.log("sliders: "+results);
+    console.log("sliders: ");console.dir(results);
     return results;
 }
 
-// Render the sliders as jQuery-UI elements.
-// Assumes we've already calculated the locations.
-function render_sliders(sliders) {
-    return $.map(sliders,function (slider) {
-             return $("<div>"+slider.param+"</div>"); });
-}
