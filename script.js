@@ -27,14 +27,21 @@ function get_extension(path) {
 
 function load_shader(gl,path) {
     var ext = get_extension(path),
-        content = get_file_text(path);
+        content = get_file_text(path),
+        sliders = extract_sliders(content),
+        shader;
     switch (ext) {
     case "vert":
-        return get_shader(gl,content, gl.VERTEX_SHADER, "vertex");
+        shader = get_shader(gl,content, gl.VERTEX_SHADER, "vertex");
+        break;
     case "frag":
-        return get_shader(gl,utils_glsl + content, gl.FRAGMENT_SHADER, "fragment");
+        shader = get_shader(gl,utils_glsl + content, gl.FRAGMENT_SHADER, "fragment");
+        break;
+    default:
+        throw("load_shader: unknown extension "+ext);
     }
-    alert("load_shader: unknown extension "+ext);
+    // console.log(path + " sliders: "); console.dir(sliders);
+    return {shader: shader, sliders: sliders};
 }
 
 function get_shader(gl,source, type, typeString) {
@@ -48,7 +55,7 @@ function get_shader(gl,source, type, typeString) {
     return shader;
 };
 
-function install_effect(canvas,effect) {
+function install_effect(canvas,effect,gui_parent) {
     // console.log("install_effect " + effect);
     var gl;
     try {
@@ -90,8 +97,8 @@ function install_effect(canvas,effect) {
 
     var _position, _time, _zoom, _pan; // Attributes & uniforms
     var program = null;
-    var choose_effect = function (frag) {
-        // console.log("choose_effect: " + frag);
+    var choose_effect = function (frag_source) {
+        // console.log("choose_effect: " + frag_source);
         // console.log("program == " + program);
         /* Try to clean up from previous effect. I don't know whether
            this step is necessary or sufficient. I still see the old
@@ -99,8 +106,9 @@ function install_effect(canvas,effect) {
         */
         if (program) gl.deleteProgram(program);
         program = gl.createProgram();
-        gl.attachShader(program, load_shader(gl,"shaders/image.vert"));
-        gl.attachShader(program, load_shader(gl,"shaders/"+frag+".frag"));
+        gl.attachShader(program, load_shader(gl,"shaders/image.vert").shader);
+        var frag = load_shader(gl,"shaders/"+frag_source+".frag");
+        gl.attachShader(program, frag.shader);
         gl.linkProgram(program);
         // Attributes & uniforms
         _position = gl.getAttribLocation(program, "position");
@@ -114,6 +122,15 @@ function install_effect(canvas,effect) {
         // Resize to set pan & zoom uniforms.
         canvas.onresize();
         tweak_pan(0,0);
+        // Find and initialize the slider parameter locations
+        var sliders = frag.sliders;
+        // console.log("sliders: "); console.dir(sliders);
+        $.each(sliders,function (_i,slider) {
+                // console.log("slider: ");console.dir(slider);
+                slider.location = gl.getUniformLocation(program, slider.param);
+                // console.log(slider.param + " is at " + slider.location);
+                gl.uniform1f(slider.location, slider.start);
+            });
     };
 
     var redraw = function(t) {
@@ -165,3 +182,20 @@ function install_effect(canvas,effect) {
         }
     };
 };
+
+/*  Extracting GUI specifications  */
+
+var slider_regexp = /^uniform\s+float\s+(\w+)\s*;\s*\/\/\s*slider:\s*(.*)\s*,\s*(.*)\s*,\s*(.*)$/gm;
+
+function extract_sliders(shader_source) {
+    var match, results = [];
+    // console.log("extract_sliders:\n"+shader_source);
+    slider_regexp.lastIndex = 0;
+    do {
+        match = slider_regexp.exec(shader_source);
+        if (match)
+            results.push({ param: match[1], start: match[2], min: match[3], max: match[4] });
+    } while (match);
+    // console.log("sliders: "+results);
+    return results;
+}
