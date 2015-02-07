@@ -16,20 +16,21 @@
   <body style="margin:0px"> <canvas/> </body>
 
   <script>
-$(document).ready(function () {  // or $(function () { ... })
-    // TODO: finish converting to jQuery
-    var effect = location.search.slice(1);
-    document.title = effect;
-    // console.log("effect: " + effect);
-    var canvas = effectCanvas(effect)[0];
-    $("body").html(canvas);
-    $(window).resize (function() {
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-        canvas.onresize();
+    $(document).ready(function () {  // or $(function () { ... })
+        // TODO: finish converting to jQuery
+        var effect = location.search.slice(1);
+        document.title = effect;
+        // console.log("effect: " + effect);
+        var canvas = $("<canvas/>")[0];
+        install_effect(canvas,effect);
+        $("body").html(canvas);
+        $(window).resize (function() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            canvas.onresize();
+        });
+        $(window).trigger("resize");
     });
-    $(window).trigger("resize");
-});
   </script>
 
 </html>

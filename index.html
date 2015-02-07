@@ -25,6 +25,12 @@
                  "diskChecker/6", "diskChecker/7", "diskChecker/8",
                  "diskChecker/9"
                  ];
+  var master = $("<canvas width=150 height=150/>"); // to be cloned
+  var effectCanvas = function (effect) {
+    var c = master.clone();
+    install_effect(c[0],effect);
+    return c;
+  }
   $(document).ready(function () {  // or $(function () { ... })
     // Add effect thumbnail canvases, each wrapped in a hyperlink.
     // For simplicity and efficiency, add in bulk.

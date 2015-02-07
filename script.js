@@ -165,10 +165,3 @@ function install_effect(canvas,effect) {
         }
     };
 };
-
-var master = $("<canvas width=150 height=150/>"); // to be cloned
-var effectCanvas = function (effect) {
-  var c = master.clone();
-  install_effect(c[0],effect);
-  return c;
-}
