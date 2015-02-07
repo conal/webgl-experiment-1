@@ -199,12 +199,34 @@ function extract_sliders(shader_source) {
     do {
         match = slider_regexp.exec(shader_source);
         if (match) {
-            var param = match[1], start = match[2], min = match[3], max = match[4];
+            // var param = match[1], start = match[2], min = match[3], max = match[4];
             // console.log("pushing param "+param);
-            results.push({ param: match[1], start: match[2], min: match[3], max: match[4],
-                           render: function () { // console.log("rendering param "+this.param);
-                                                 return $("<div>"+this.param+"</div>"); }
-                });
+            var slider_obj =
+                { param: match[1], start: match[2], min: match[3], max: match[4],
+                  render: function () {
+                    // console.log("rendering param "+this.param);
+                    // var slider_div = $("<div>"+this.param+"</div>");
+                    var slider_div = $("<div/>");
+                    var slider_min = this.min;
+                    var scale = (this.max - this.min) / 10000;
+                    slider_div.slider({ min: 0, max: 10000,
+                                value: (this.start - this.min) / scale,
+                                slide: function (event,ui) {
+                                    // console.log("slide "+[ui.value,slider_min,scale,slider_min + ui.value*scale] );
+                                    var val = slider_min + ui.value*scale;
+                                    console.log(val);
+
+                                    // WORKING HERE. set uniform.
+                                    // Oops! gl not in scope.
+
+                                    // gl.uniform1f(slider_obj.location, val);
+                                },
+                                       });
+                    // slider_div.height("3px"); // My CSS tweak didn't work
+                    // return slider_div;
+                    return $("<div>"+this.param+"</div>").append(slider_div);
+                  } };
+        results.push(slider_obj);
         };
     } while (match);
     // console.log("sliders: ");console.dir(results);

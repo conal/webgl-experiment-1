@@ -14,12 +14,14 @@
        div.gui { 
            position:fixed;
            width: 250px;
+           height: 400px;
            top:20px;right:50px;
            font-size:150%;
            padding:5px;
            background:rgba(200,200,255,0.5);
        }
        canvas { z-index: -1; } // below GUI
+       // div.ui-slider-horizontal { width: 3px !important; } // Doesn't work. Hm.
     </style>
   </head>
   <body style="margin:0px"> <div class=gui></div> </body>
@@ -33,6 +35,7 @@
         var canvas = $("<canvas/>")[0];
         var sliders = install_effect(canvas,effect);
         $(".gui").append($.map(sliders,function (slider) {
+             // console.dir(slider);
              return slider.render(); }));
         $("body").append(canvas);
         $(window).resize (function() {
