@@ -52,7 +52,7 @@ function get_shader(gl,source, type, typeString) {
         alert("ERROR IN "+typeString+ " shader:\n" + gl.getShaderInfoLog(shader));
         return false;
     }
-    console.dir(shader);
+    // console.dir(shader);
     return shader;
 };
 
@@ -200,12 +200,14 @@ function extract_sliders(shader_source) {
         match = slider_regexp.exec(shader_source);
         if (match) {
             var param = match[1], start = match[2], min = match[3], max = match[4];
-            results.push({ param: param, start: start, min: min, max: max,
-                           render: function () { return $("<div>"+param+"</div>"); }
+            // console.log("pushing param "+param);
+            results.push({ param: match[1], start: match[2], min: match[3], max: match[4],
+                           render: function () { // console.log("rendering param "+this.param);
+                                                 return $("<div>"+this.param+"</div>"); }
                 });
-        }
+        };
     } while (match);
-    console.log("sliders: ");console.dir(results);
+    // console.log("sliders: ");console.dir(results);
     return results;
 }
 
