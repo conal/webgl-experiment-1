@@ -41,7 +41,7 @@ function load_shader(gl,path) {
         throw("load_shader: unknown extension "+ext);
     }
     // console.log(path + " sliders: "); console.dir(sliders);
-    return {shader: shader, sliders: sliders};
+    return { shader: shader, sliders: sliders };
 }
 
 function get_shader(gl,source, type, typeString) {
@@ -123,23 +123,11 @@ function install_effect(canvas,effect) {
         // Resize to set pan & zoom uniforms.
         canvas.onresize();
         tweak_pan(0,0);
-        // Find and initialize the slider parameter locations
-        var sliders = frag.sliders;
+        // Set up GUI elements
         // console.log("sliders: "); console.dir(sliders);
-        // TODO: Move to sliders construction, which requires access to the program.
-        // Perhaps return the shader source instead of sliders from load_shader.
-        $.each(sliders,function (_i,slider) {
-                console.log("slider: ");console.dir(slider);
-                (function () {
-                var location = gl.getUniformLocation(program, slider.param),
-                    param = slider.param;
-                slider.set = function (val) {
-                    console.log(param + " = " + val);
-                    gl.uniform1f(location, val);
-                } })();
-                slider.set(slider.start);
+        return $.map(frag.sliders,function (slider) {
+                return render_slider(gl,program,slider);
             });
-        return sliders;
     };
 
     var redraw = function(t) {
@@ -204,35 +192,29 @@ function extract_sliders(shader_source) {
     do {
         match = slider_regexp.exec(shader_source);
         if (match) {
-            // var param = match[1], start = match[2], min = match[3], max = match[4];
-            // console.log("pushing param "+param);
-            var slider_obj;
-            slider_obj =
-                { param: match[1], start: match[2], min: match[3], max: match[4],
-                  render: function () {
-                    // console.log("rendering param "+this.param);
-                    // var slider_div = $("<div>"+this.param+"</div>");
-                    var slider_div = $("<div/>");
-                    var slider_min = this.min;
-                    var scale = (this.max - this.min) / 10000;
-                    var set = slider_obj.set;
-                    var param = slider_obj.param;
-                    slider_div.slider({ min: 0, max: 10000,
-                                        value: (this.start - this.min) / scale,
-                                        slide: function (event,ui) {
-                                            console.log("slide "+param);
-                                            // console.log("slide "+[ui.value,slider_min,scale,slider_min + ui.value*scale] );
-                                            set(slider_min + ui.value*scale);
-                                        },
-                                       });
-                    // slider_div.height("3px"); // My CSS tweak didn't work
-                    // return slider_div;
-                    return $("<div>"+this.param+"</div>").append(slider_div);
-                  } };
-        results.push(slider_obj);
+            // console.log("found param "+match[1]);
+            results.push({ param: match[1], start: match[2], min: match[3], max: match[4] });
         };
     } while (match);
     // console.log("sliders: ");console.dir(results);
     return results;
 }
 
+function render_slider(gl,program,slider) {
+    // console.log("render_slider: ");console.dir(slider);
+    var slider_div = $("<div/>");
+    var scale = (slider.max - slider.min) / 10000;
+    var location = gl.getUniformLocation(program, slider.param);
+    function set (val) { gl.uniform1f(location, val); }
+    set(slider.start);
+    slider_div.slider({ min: 0, max: 10000,
+                       value: (slider.start - slider.min) / scale,
+                       slide: function (event,ui) {
+                                  console.log("slide "+slider.param);
+                                  set(slider.min + ui.value*scale);
+                              }
+                       });
+    slider_div.height("3px"); // My CSS tweak didn't work
+    slider_div.children().css({"top":"-8px","height":"18px","width":"18px"});
+    return $("<div>"+slider.param+"</div>").append(slider_div);
+}

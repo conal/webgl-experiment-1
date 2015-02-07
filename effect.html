@@ -15,10 +15,9 @@
        div.gui { 
            position:fixed;
            width: 250px;
-           height: 400px;
            top:20px;right:50px;
            font-size:150%;
-           padding:5px;
+           padding:5px;padding-bottom:10px;
            background:rgba(200,200,255,0.5);
        }
        canvas { z-index: -1; } // below GUI
@@ -34,11 +33,8 @@
         document.title = effect;
         // console.log("effect: " + effect);
         var canvas = $("<canvas/>")[0];
-        var sliders = install_effect(canvas,effect);
-        $(".gui").append($.map(sliders,function (slider) {
-             // console.dir(slider);
-             return slider.render(); }));
         $("body").append(canvas);
+        $(".gui").append(install_effect(canvas,effect));
         $(window).resize (function() {
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
