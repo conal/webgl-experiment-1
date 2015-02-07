@@ -129,10 +129,15 @@ function install_effect(canvas,effect) {
         // TODO: Move to sliders construction, which requires access to the program.
         // Perhaps return the shader source instead of sliders from load_shader.
         $.each(sliders,function (_i,slider) {
-                // console.log("slider: ");console.dir(slider);
-                slider.location = gl.getUniformLocation(program, slider.param);
-                // console.log(slider.param + " is at " + slider.location);
-                gl.uniform1f(slider.location, slider.start);
+                console.log("slider: ");console.dir(slider);
+                (function () {
+                var location = gl.getUniformLocation(program, slider.param),
+                    param = slider.param;
+                slider.set = function (val) {
+                    console.log(param + " = " + val);
+                    gl.uniform1f(location, val);
+                } })();
+                slider.set(slider.start);
             });
         return sliders;
     };
@@ -201,7 +206,8 @@ function extract_sliders(shader_source) {
         if (match) {
             // var param = match[1], start = match[2], min = match[3], max = match[4];
             // console.log("pushing param "+param);
-            var slider_obj =
+            var slider_obj;
+            slider_obj =
                 { param: match[1], start: match[2], min: match[3], max: match[4],
                   render: function () {
                     // console.log("rendering param "+this.param);
@@ -209,18 +215,15 @@ function extract_sliders(shader_source) {
                     var slider_div = $("<div/>");
                     var slider_min = this.min;
                     var scale = (this.max - this.min) / 10000;
+                    var set = slider_obj.set;
+                    var param = slider_obj.param;
                     slider_div.slider({ min: 0, max: 10000,
-                                value: (this.start - this.min) / scale,
-                                slide: function (event,ui) {
-                                    // console.log("slide "+[ui.value,slider_min,scale,slider_min + ui.value*scale] );
-                                    var val = slider_min + ui.value*scale;
-                                    console.log(val);
-
-                                    // WORKING HERE. set uniform.
-                                    // Oops! gl not in scope.
-
-                                    // gl.uniform1f(slider_obj.location, val);
-                                },
+                                        value: (this.start - this.min) / scale,
+                                        slide: function (event,ui) {
+                                            console.log("slide "+param);
+                                            // console.log("slide "+[ui.value,slider_min,scale,slider_min + ui.value*scale] );
+                                            set(slider_min + ui.value*scale);
+                                        },
                                        });
                     // slider_div.height("3px"); // My CSS tweak didn't work
                     // return slider_div;
