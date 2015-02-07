@@ -2,26 +2,34 @@
 <html>
   <head>
     <meta charset="utf-8"/>
+    <!-- <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script> -->
+    <!--
+    <script src="jquery.min.js"></script>
+     -->
+    <script src="jquery-ui/external/jquery/jquery.js"></script>
+    <script src="jquery-ui/jquery-ui.js"></script>
+    <link href="jquery-ui/jquery-ui.css" rel="stylesheet">
+<!--
+-->
     <script type="text/javascript" src="script.js"></script>
   </head>
-  <body style="margin:0px" onload="main()">
-    <canvas></canvas>
-  </body>
+  <body style="margin:0px"> <canvas/> </body>
 
   <script>
-function main() {
+$(document).ready(function () {  // or $(function () { ... })
+    // TODO: finish converting to jQuery
     var effect = location.search.slice(1);
     document.title = effect;
     // console.log("effect: " + effect);
-    var canvas = document.getElementsByTagName("canvas")[0];
-    install_effect(canvas,effect);
-    window.onresize = function() {
+    var canvas = effectCanvas(effect)[0];
+    $("body").html(canvas);
+    $(window).resize (function() {
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
         canvas.onresize();
-    };
-    window.onresize();
-}
+    });
+    $(window).trigger("resize");
+});
   </script>
 
 </html>

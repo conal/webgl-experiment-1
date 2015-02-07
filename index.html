@@ -5,7 +5,8 @@
     <!--
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
     -->
-    <script src="jquery.min.js"></script>
+    <!-- <script src="jquery.min.js"></script> -->
+    <script src="jquery-ui/external/jquery/jquery.js"></script>
     <script type="text/javascript" src="script.js"></script>
     <style>
        canvas {
@@ -14,7 +15,7 @@
        body { background-color:yellow }
     </style>
   </head>
-  <body onload="main()"></body>
+  <body></body>
 </html>
 
 <script type="text/javascript">
@@ -24,17 +25,11 @@
                  "diskChecker/6", "diskChecker/7", "diskChecker/8",
                  "diskChecker/9"
                  ];
-  function main() {
+  $(document).ready(function () {  // or $(function () { ... })
     // Add effect thumbnail canvases, each wrapped in a hyperlink.
     // For simplicity and efficiency, add in bulk.
-    var master = $("<canvas width=150 height=150/>"); // to be cloned
-    var effectCanvas = function (effect) {
-      var c = master.clone();
-      install_effect(c[0],effect);
-      return c;
-    }
-    $("body").append($.map(effects,function(effect,_i) {
-        return $("<a href=effect.html?"+effect+"></a>").html(effectCanvas(effect));
+    $("body").append($.map(effects,function(effect) {
+        return $("<a href=effect.html?"+effect+"/>").html(effectCanvas(effect));
     }));
-  }
+  });
 </script>

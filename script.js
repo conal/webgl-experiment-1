@@ -1,17 +1,21 @@
+// When file://, works in Safari but not Firefox or Chrome.
+// Otherwise, for local use, do the following in a shell:
+//     cd path-to-files
+//     python -m SimpleHTTPServer
+// Then point your browser to
+//     http://localhost:8000
 function get_file_text(path) {
-    var XHR = new XMLHttpRequest();
-    XHR.open("GET", path, false);
-    if (XHR.overrideMimeType) {
-        XHR.overrideMimeType("text/plain");
-    }
-    try {
-        XHR.send(null);
-    } catch (e) {
-        this.println('Error reading file "' + path + '"');
-    }
-    if (!XHR.responseText)
-        throw ("get_file_text "+path+": file not found.");
-    return XHR.responseText;
+    var content;
+    // console.log("get "+path);
+    jQuery.ajax({
+         url: path,
+         success: function (result) {
+                    // console.log(result);
+                    content = result;
+                  },
+         async: false,
+    });
+    return content;
 };
 
 var utils_glsl = get_file_text("shaders/utils.glsl") + "\n\n";
@@ -161,3 +165,10 @@ function install_effect(canvas,effect) {
         }
     };
 };
+
+var master = $("<canvas width=150 height=150/>"); // to be cloned
+var effectCanvas = function (effect) {
+  var c = master.clone();
+  install_effect(c[0],effect);
+  return c;
+}
