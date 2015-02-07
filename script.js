@@ -55,7 +55,7 @@ function get_shader(gl,source, type, typeString) {
     return shader;
 };
 
-function install_effect(canvas,effect,gui_parent) {
+function install_effect(canvas,effect) {
     // console.log("install_effect " + effect);
     var gl;
     try {
@@ -131,6 +131,7 @@ function install_effect(canvas,effect,gui_parent) {
                 // console.log(slider.param + " is at " + slider.location);
                 gl.uniform1f(slider.location, slider.start);
             });
+        return sliders;
     };
 
     var redraw = function(t) {
@@ -160,7 +161,7 @@ function install_effect(canvas,effect,gui_parent) {
         queue_draw();
     }
     // choose_effect(canvas.innerHTML);
-    choose_effect(effect);
+    var sliders = choose_effect(effect);
     // canvas.onresize();
     // I tried event.movementX and event.movementY, but got undefined.
     // jQuery might help.
@@ -181,6 +182,7 @@ function install_effect(canvas,effect,gui_parent) {
             prevX=x; prevY=y;
         }
     };
+    return sliders;
 };
 
 /*  Extracting GUI specifications  */
@@ -198,4 +200,11 @@ function extract_sliders(shader_source) {
     } while (match);
     // console.log("sliders: "+results);
     return results;
+}
+
+// Render the sliders as jQuery-UI elements.
+// Assumes we've already calculated the locations.
+function render_sliders(sliders) {
+    return $.map(sliders,function (slider) {
+             return $("<div>"+slider.param+"</div>"); });
 }

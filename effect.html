@@ -9,11 +9,20 @@
     <script src="jquery-ui/external/jquery/jquery.js"></script>
     <script src="jquery-ui/jquery-ui.js"></script>
     <link href="jquery-ui/jquery-ui.css" rel="stylesheet">
-<!--
--->
     <script type="text/javascript" src="script.js"></script>
+    <style>
+       div.gui { 
+           position:fixed;
+           width: 250px;
+           top:20px;right:50px;
+           font-size:150%;
+           padding:5px;
+           background:rgba(200,200,255,0.5);
+       }
+       canvas { z-index: -1; } // below GUI
+    </style>
   </head>
-  <body style="margin:0px"> <canvas/> </body>
+  <body style="margin:0px"> <div class=gui></div> </body>
 
   <script>
     $(document).ready(function () {  // or $(function () { ... })
@@ -22,8 +31,9 @@
         document.title = effect;
         // console.log("effect: " + effect);
         var canvas = $("<canvas/>")[0];
-        install_effect(canvas,effect);
-        $("body").html(canvas);
+        var sliders = install_effect(canvas,effect);
+        $(".gui").append(render_sliders(sliders));
+        $("body").append(canvas);
         $(window).resize (function() {
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
