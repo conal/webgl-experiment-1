@@ -193,7 +193,8 @@ function extract_sliders(shader_source) {
         match = slider_regexp.exec(shader_source);
         if (match) {
             // console.log("found param "+match[1]);
-            results.push({ param: match[1], start: match[2], min: match[3], max: match[4] });
+            function pn (i) { return parseFloat(match[i]); }
+            results.push({ param: match[1], start: pn(2), min: pn(3), max: pn(4) });
         };
     } while (match);
     // console.log("sliders: ");console.dir(results);
@@ -214,7 +215,6 @@ function render_slider(gl,program,slider) {
                                    set(slider.min + ui.value*scale);
                                }
                       });
-    // slider_div.height("3px"); // My CSS tweak didn't work
-    // slider_div.children().css({"top":"-8px","height":"18px","width":"18px"});
-    return $("<div class=slider-and-label><div class=slider-label>"+slider.param+"</div></div>").append(slider_div);
+    return $("<div class=slider-and-label><div class=slider-label>"
+             +slider.param.replace(/_/g," ")+"</div></div>").append(slider_div);
 }
