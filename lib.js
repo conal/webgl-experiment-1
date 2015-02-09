@@ -28,7 +28,7 @@ function get_extension(path) {
 function load_shader(gl,path) {
     var ext = get_extension(path),
         content = get_file_text(path),
-        sliders = extract_sliders(content),
+        widgets = extract_widgets(content),
         shader;
     switch (ext) {
     case "vert":
@@ -40,8 +40,8 @@ function load_shader(gl,path) {
     default:
         throw("load_shader: unknown extension "+ext);
     }
-    // console.log(path + " sliders: "); console.dir(sliders);
-    return { shader: shader, sliders: sliders };
+    // console.log(path + " widgets: "); console.dir(widgets);
+    return { shader: shader, widgets: widgets };
 }
 
 function get_shader(gl,source, type, typeString) {
@@ -124,25 +124,30 @@ function install_effect(canvas,effect) {
         canvas.onresize();
         tweak_pan(0,0);
         // Set up GUI elements
-        // console.log("sliders: "); console.dir(sliders);
-        function render_slider(slider) {
-            // console.log("render_slider: ");console.dir(slider);
-            var slider_div = $("<div></div>");
-            var scale = (slider.max - slider.min) / 10000;
-            var location = gl.getUniformLocation(program, slider.param);
-            function set (val) { gl.uniform1f(location, val); queue_draw(); }
-            set(slider.start);
-            slider_div.slider({ min: 0, max: 10000,
-                                value: (slider.start - slider.min) / scale,
-                                slide: function (_event,ui) {
-                                           // console.log("slide "+slider.param);
-                                           set(slider.min + ui.value*scale);
-                                       }
-                              });
-            return $("<div class=slider-and-label><div class=slider-label>"
-                     +slider.param.replace(/_/g," ")+"</div></div>").append(slider_div);
+        // console.log("widgets: "); console.dir(widgets);
+        function render_widget(widget) {
+            // console.log("render_widget: ");console.dir(widget);
+            var widget_div = $("<div></div>");
+            switch (widget.type) {
+            case "slider":
+              var scale = (widget.max - widget.min) / 10000;
+              var location = gl.getUniformLocation(program, widget.param);
+              function set (val) { gl.uniform1f(location, val); queue_draw(); }
+              set(widget.start);
+              widget_div.slider({ min: 0, max: 10000,
+                                  value: (widget.start - widget.min) / scale,
+                                  slide: function (_event,ui) {
+                                             // console.log("slide "+widget.param);
+                                             set(widget.min + ui.value*scale);
+                                         }
+                                });
+              return $("<div class=slider-and-label><div class=slider-label>"
+                       +widget.param.replace(/_/g," ")+"</div></div>").append(widget_div);
+            default:
+                alert("Unrecognized widget type: " + type);
+            }
         }
-        return $.map(frag.sliders,render_slider);
+        return $.map(frag.widgets,render_widget);
     };
 
     var redraw = function(t) {
@@ -172,7 +177,7 @@ function install_effect(canvas,effect) {
         queue_draw();
     }
     // choose_effect(canvas.innerHTML);
-    var sliders = choose_effect(effect);
+    var widgets = choose_effect(effect);
     // canvas.onresize();
     // I tried event.movementX and event.movementY, but got undefined.
     // jQuery might help.
@@ -193,25 +198,27 @@ function install_effect(canvas,effect) {
             prevX=x; prevY=y;
         }
     };
-    return sliders;
+    return widgets;
 };
 
 /*  Extracting GUI specifications  */
 
-var slider_regexp = /^uniform\s+float\s+(\w+)\s*;\s*\/\/\s*slider:?\s*(.*)\s*,\s*(.*)\s*,\s*(.*)$/gm;
+var widget_regexp = /^uniform\s+float\s+(\w+)\s*;\s*\/\/\s*GUI: slider\s*(.*)\s*,\s*(.*)\s*,\s*(.*)$/gm;
 
-function extract_sliders(shader_source) {
+// TODO: Split into a standard form followed by widget-specifics.
+
+function extract_widgets(shader_source) {
     var match, results = [];
-    // console.log("extract_sliders:\n"+shader_source);
-    slider_regexp.lastIndex = 0;
+    // console.log("extract_widgets:\n"+shader_source);
+    widget_regexp.lastIndex = 0;
     do {
-        match = slider_regexp.exec(shader_source);
+        match = widget_regexp.exec(shader_source);
         if (match) {
             // console.log("found param "+match[1]);
             var pn = function (i) { return parseFloat(match[i]); };
-            results.push({ param: match[1], start: pn(2), min: pn(3), max: pn(4) });
+            results.push({ param: match[1], type: "slider", start: pn(2), min: pn(3), max: pn(4) });
         };
     } while (match);
-    console.log("sliders: ");console.dir(results);
+    // console.log("widgets: ");console.dir(results);
     return results;
 }
