@@ -125,9 +125,24 @@ function install_effect(canvas,effect) {
         tweak_pan(0,0);
         // Set up GUI elements
         // console.log("sliders: "); console.dir(sliders);
-        return $.map(frag.sliders,function (slider) {
-                return render_slider(gl,program,slider);
-            });
+        function render_slider(slider) {
+            // console.log("render_slider: ");console.dir(slider);
+            var slider_div = $("<div></div>");
+            var scale = (slider.max - slider.min) / 10000;
+            var location = gl.getUniformLocation(program, slider.param);
+            function set (val) { gl.uniform1f(location, val); queue_draw(); }
+            set(slider.start);
+            slider_div.slider({ min: 0, max: 10000,
+                                value: (slider.start - slider.min) / scale,
+                                slide: function (_event,ui) {
+                                           // console.log("slide "+slider.param);
+                                           set(slider.min + ui.value*scale);
+                                       }
+                              });
+            return $("<div class=slider-and-label><div class=slider-label>"
+                     +slider.param.replace(/_/g," ")+"</div></div>").append(slider_div);
+        }
+        return $.map(frag.sliders,render_slider);
     };
 
     var redraw = function(t) {
@@ -183,7 +198,7 @@ function install_effect(canvas,effect) {
 
 /*  Extracting GUI specifications  */
 
-var slider_regexp = /^uniform\s+float\s+(\w+)\s*;\s*\/\/\s*slider:\s*(.*)\s*,\s*(.*)\s*,\s*(.*)$/gm;
+var slider_regexp = /^uniform\s+float\s+(\w+)\s*;\s*\/\/\s*slider:?\s*(.*)\s*,\s*(.*)\s*,\s*(.*)$/gm;
 
 function extract_sliders(shader_source) {
     var match, results = [];
@@ -193,28 +208,10 @@ function extract_sliders(shader_source) {
         match = slider_regexp.exec(shader_source);
         if (match) {
             // console.log("found param "+match[1]);
-            function pn (i) { return parseFloat(match[i]); }
+            var pn = function (i) { return parseFloat(match[i]); };
             results.push({ param: match[1], start: pn(2), min: pn(3), max: pn(4) });
         };
     } while (match);
-    // console.log("sliders: ");console.dir(results);
+    console.log("sliders: ");console.dir(results);
     return results;
-}
-
-function render_slider(gl,program,slider) {
-    // console.log("render_slider: ");console.dir(slider);
-    var slider_div = $("<div></div>");
-    var scale = (slider.max - slider.min) / 10000;
-    var location = gl.getUniformLocation(program, slider.param);
-    function set (val) { gl.uniform1f(location, val); }
-    set(slider.start);
-    slider_div.slider({ min: 0, max: 10000,
-                        value: (slider.start - slider.min) / scale,
-                        slide: function (_event,ui) {
-                                   // console.log("slide "+slider.param);
-                                   set(slider.min + ui.value*scale);
-                               }
-                      });
-    return $("<div class=slider-and-label><div class=slider-label>"
-             +slider.param.replace(/_/g," ")+"</div></div>").append(slider_div);
 }
