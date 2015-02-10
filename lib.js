@@ -129,7 +129,7 @@ function install_effect(canvas,effect) {
             // console.log("render_widget: ");console.dir(widget);
             var widget_div = $("<div></div>");
             var location = gl.getUniformLocation(program, widget.param);
-            if (location) {  // if actually used
+            if (true || location) {  // if actually used
               switch (widget.type) {
               case "slider":
                 var scale = (widget.max - widget.min) / 10000;
@@ -142,12 +142,14 @@ function install_effect(canvas,effect) {
                                                set(widget.min + ui.value*scale);
                                            }
                                   });
-                return $("<div class=slider-and-label><div class=slider-label>"
+                return $("<div class=slider-and-label><div class=widget-label>"
                          +widget.param.replace(/_/g," ")+"</div></div>").append(widget_div);
               case "video":
-                  return 
+                  // console.log("Rendering video widget.");
+                  return $("<div class=widget-label>video</div>").append(widget_div);
               default:
                   alert("render_widget: unrecognized widget type " + widget.type);
+                  return $("widget " + widget.type);
               }
             }
         }
@@ -219,10 +221,10 @@ function extract_widgets(shader_source) {
     widget_regexp.lastIndex = 0;
     do {
         match = widget_regexp.exec(shader_source);
-        console.log("match: ");console.log(match);
+        // console.log("match: ");console.log(match);
         if (match) {
             var widget = { param: match[2], type: match[3] };
-            console.log("Widget "+widget.param+" as "+widget.type+".");
+            // console.log("Widget "+widget.param+" as "+widget.type+".");
             switch (widget.type) {
             case "slider":
                 slider_regexp.lastIndex = 0;
@@ -232,7 +234,7 @@ function extract_widgets(shader_source) {
                     $.extend(widget,{ start: pn(1), min: pn(2), max: pn(3) });
                 } else
                     alert("bad slider spec: " + match[4]);
-                console.log("extended: ");console.dir(widget);
+                // console.log("extended: ");console.dir(widget);
                 break;
             case "video":
                 break;
@@ -243,6 +245,6 @@ function extract_widgets(shader_source) {
             results.push(widget);
         };
     } while (match);
-    console.log("widgets: ");console.dir(results);
+    // console.log("widgets: ");console.dir(results);
     return results;
 }
