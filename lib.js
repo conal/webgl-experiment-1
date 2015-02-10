@@ -128,25 +128,27 @@ function install_effect(canvas,effect) {
         function render_widget(widget) {
             // console.log("render_widget: ");console.dir(widget);
             var widget_div = $("<div></div>");
-            switch (widget.type) {
-            case "slider":
-              var scale = (widget.max - widget.min) / 10000;
-              var location = gl.getUniformLocation(program, widget.param);
-              function set (val) { gl.uniform1f(location, val); queue_draw(); }
-              set(widget.start);
-              widget_div.slider({ min: 0, max: 10000,
-                                  value: (widget.start - widget.min) / scale,
-                                  slide: function (_event,ui) {
-                                             // console.log("slide "+widget.param);
-                                             set(widget.min + ui.value*scale);
-                                         }
-                                });
-              return $("<div class=slider-and-label><div class=slider-label>"
-                       +widget.param.replace(/_/g," ")+"</div></div>").append(widget_div);
-            case "video":
-                return 
-            default:
-                alert("render_widget: unrecognized widget type " + widget.type);
+            var location = gl.getUniformLocation(program, widget.param);
+            if (location) {  // if actually used
+              switch (widget.type) {
+              case "slider":
+                var scale = (widget.max - widget.min) / 10000;
+                function set (val) { gl.uniform1f(location, val); queue_draw(); }
+                set(widget.start);
+                widget_div.slider({ min: 0, max: 10000,
+                                    value: (widget.start - widget.min) / scale,
+                                    slide: function (_event,ui) {
+                                               // console.log("slide "+widget.param);
+                                               set(widget.min + ui.value*scale);
+                                           }
+                                  });
+                return $("<div class=slider-and-label><div class=slider-label>"
+                         +widget.param.replace(/_/g," ")+"</div></div>").append(widget_div);
+              case "video":
+                  return 
+              default:
+                  alert("render_widget: unrecognized widget type " + widget.type);
+              }
             }
         }
         return $.map(frag.widgets,render_widget);
