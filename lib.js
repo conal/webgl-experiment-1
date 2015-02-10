@@ -143,8 +143,10 @@ function install_effect(canvas,effect) {
                                 });
               return $("<div class=slider-and-label><div class=slider-label>"
                        +widget.param.replace(/_/g," ")+"</div></div>").append(widget_div);
+            case "video":
+                return 
             default:
-                alert("Unrecognized widget type: " + type);
+                alert("render_widget: unrecognized widget type " + widget.type);
             }
         }
         return $.map(frag.widgets,render_widget);
@@ -203,7 +205,9 @@ function install_effect(canvas,effect) {
 
 /*  Extracting GUI specifications  */
 
-var widget_regexp = /^uniform\s+float\s+(\w+)\s*;\s*\/\/\s*GUI: slider\s*(.*)\s*,\s*(.*)\s*,\s*(.*)$/gm;
+var widget_regexp = /^uniform\s+(\w+)\s+(\w+)\s*;\s*\/\/\s*widget:\s*(\w+)(.*)$/gm;
+
+var slider_regexp = /^\s*(.*)\s*,\s*(.*)\s*,\s*(.*)\s*$/;
 
 // TODO: Split into a standard form followed by widget-specifics.
 
@@ -213,12 +217,30 @@ function extract_widgets(shader_source) {
     widget_regexp.lastIndex = 0;
     do {
         match = widget_regexp.exec(shader_source);
+        console.log("match: ");console.log(match);
         if (match) {
-            // console.log("found param "+match[1]);
-            var pn = function (i) { return parseFloat(match[i]); };
-            results.push({ param: match[1], type: "slider", start: pn(2), min: pn(3), max: pn(4) });
+            var widget = { param: match[2], type: match[3] };
+            console.log("Widget "+widget.param+" as "+widget.type+".");
+            switch (widget.type) {
+            case "slider":
+                slider_regexp.lastIndex = 0;
+                var slider_match = slider_regexp.exec(match[4]);
+                if (slider_match) {
+                    var pn = function (i) { return parseFloat(slider_match[i]); };
+                    $.extend(widget,{ start: pn(1), min: pn(2), max: pn(3) });
+                } else
+                    alert("bad slider spec: " + match[4]);
+                console.log("extended: ");console.dir(widget);
+                break;
+            case "video":
+                break;
+            default:
+                alert("extract_widgets: unrecognized widget: " + widget.type);
+                break;
+            }
+            results.push(widget);
         };
     } while (match);
-    // console.log("widgets: ");console.dir(results);
+    console.log("widgets: ");console.dir(results);
     return results;
 }
