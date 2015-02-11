@@ -11,7 +11,10 @@ Tested under:
 
 Directions:
 
-*   View index.html in a browser.
+*   If running locally, start up a web server.
+    I `cd` to the project directory and do "`python -m SimpleHTTPServer`".
+*   View http://localhost:8000 in a browser.
+
 
 ## Bugs
 
