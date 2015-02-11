@@ -143,6 +143,7 @@ function install_effect(canvas,effect) {
                                            }
                                   });
                 break;
+/*
               case "video":
                   // console.log("Rendering video widget.");
                   var video = $("<video autoplay muted loop=true controls src=media/creek.mp4 />");
@@ -158,6 +159,30 @@ function install_effect(canvas,effect) {
                   };
                   window.requestAnimationFrame(update);
                   $(widget_div).append(video);
+                  break;
+*/
+              case "webcam":
+                  (function (gl,location,widget_div) {
+                  console.log("Rendering webcam widget.");
+                  var video = $("<video class=center autoplay />");
+                  var texture = makeTexture(gl);
+                  // Texture unit 0 for now. TODO: reserve a unit and use in updateTexture.
+                  gl.uniform1i(location, 0);
+                  navigator.getUserMedia(
+                      { audio: false, video: true },
+                      function (stream) {
+                          video[0].src = window.URL.createObjectURL(stream); },
+                      function (e) { console.log(e); });
+                  var update;
+                  update = function () {
+                      // console.log("webcam update")
+                      updateTexture(gl,texture,video[0]);
+                      queue_draw();
+                      window.requestAnimationFrame(update);
+                  };
+                  window.requestAnimationFrame(update);
+                  $(widget_div).append(video); // show preview
+                  })(gl,location,widget_div);
                   break;
               default:
                   alert("render_widget: unrecognized widget type " + widget.type);
@@ -253,8 +278,8 @@ function extract_widgets(shader_source) {
                     alert("bad slider spec: " + match[4]);
                 // console.log("extended: ");console.dir(widget);
                 break;
-            case "video":
-                break;
+            case "webcam": break;
+            case "video": break;
             default:
                 alert("extract_widgets: unrecognized widget: " + widget.type);
                 break;
@@ -267,7 +292,7 @@ function extract_widgets(shader_source) {
 }
 
 function makeTexture(gl) {
-  console.log("makeTexture");
+  // console.log("makeTexture");
   var texture = gl.createTexture();
   gl.bindTexture(gl.TEXTURE_2D, texture);
   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
@@ -283,3 +308,12 @@ function updateTexture(gl,texture,source) {
   gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
   gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, source);
 }
+
+
+$(function () {
+    navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia ||
+                             navigator.mozGetUserMedia || navigator.msGetUserMedia;
+
+    if (!navigator.getUserMedia)
+       alert('getUserMedia not supported in this browser.');
+});
