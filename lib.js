@@ -163,7 +163,7 @@ function install_effect(canvas,effect) {
 */
               case "webcam":
                   (function (gl,location,widget_div) {
-                  console.log("Rendering webcam widget.");
+                  // console.log("Rendering webcam widget.");
                   var video = $("<video class=center autoplay />");
                   var texture = makeTexture(gl);
                   // Texture unit 0 for now. TODO: reserve a unit and use in updateTexture.
