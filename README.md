@@ -23,5 +23,7 @@ Directions:
     Maybe one is clobbering the other, via a bug related to JS scoping.
     Oh! It works in Chrome, after asking a second time for camera access.
 *   It's tedious to keep re-approving camera access.
+*   Rendering seems to slow down over time, especially with video.
+
 
 
