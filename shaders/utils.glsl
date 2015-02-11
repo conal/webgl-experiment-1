@@ -31,6 +31,16 @@ bool disk (vec2 p, float radius) { return disk(p/radius); }
 
 // bool disk (vec2 p, float radius) { return disk(p,radius,vec2(0.0,0.0)); }
 
+bool inUnit (float a) { return 0.0 <= a && a <= 1.0; }
+bool inUnit (vec2 p) { return inUnit(p.x) && inUnit(p.y); }
+
+const vec4 clear = vec4(0.0,0.0,0.0,0.0);
+
+vec4 tex2d(sampler2D sampler, vec2 p) {
+    p = p/2.0 + 0.5;
+    return (inUnit(p) ? texture2D(sampler,p) : clear);
+}
+
 // -----------------
 
 const float pi = 3.14159265358979;
@@ -45,3 +55,4 @@ vec4 effect (vec2 p);
 
 // void main () { gl_FragColor = effect(v_position / zoom - pan); }
 void main () { gl_FragColor = effect((v_position - pan) / zoom); }
+

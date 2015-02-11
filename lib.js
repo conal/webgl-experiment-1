@@ -127,9 +127,9 @@ function install_effect(canvas,effect) {
         // console.log("widgets: "); console.dir(widgets);
         function render_widget(widget) {
             // console.log("render_widget: ");console.dir(widget);
-            var widget_div = $("<div></div>");
             var location = gl.getUniformLocation(program, widget.param);
             if (true || location) {  // if actually used
+              var widget_div = $("<div></div>");
               switch (widget.type) {
               case "slider":
                 var scale = (widget.max - widget.min) / 10000;
@@ -142,17 +142,34 @@ function install_effect(canvas,effect) {
                                                set(widget.min + ui.value*scale);
                                            }
                                   });
-                return $("<div class=slider-and-label><div class=widget-label>"
-                         +widget.param.replace(/_/g," ")+"</div></div>").append(widget_div);
+                break;
               case "video":
                   // console.log("Rendering video widget.");
-                  return $("<div class=widget-label>video</div>").append(widget_div);
+                  var video = $("<video autoplay muted loop=true controls src=media/creek.mov />");
+                  var texture = makeTexture(gl);
+                  // Texture unit 0 for now. TODO: reserve a unit and use in updateTexture.
+                  gl.uniform1i(location, 0);
+                  var update;
+                  update = function () {
+                      // console.log("video update")
+                      updateTexture(gl,texture,video[0]);
+                      queue_draw();
+                      window.requestAnimationFrame(update);
+                  };
+                  window.requestAnimationFrame(update);
+                  $(widget_div).append(video);
+                  break;
               default:
                   alert("render_widget: unrecognized widget type " + widget.type);
-                  return $("widget " + widget.type);
+                  $("unknown widget " + widget.type).append(widget_div);
+                  break;
               }
+              return $("<div class=widget-and-label><div class=widget-label>"
+                       +widget.param.replace(/_/g," ")+"</div></div>").append(widget_div);
+
             }
         }
+        // return (function () { return $.map(frag.widgets,render_widget); });
         return $.map(frag.widgets,render_widget);
     };
 
@@ -247,4 +264,22 @@ function extract_widgets(shader_source) {
     } while (match);
     // console.log("widgets: ");console.dir(results);
     return results;
+}
+
+function makeTexture(gl) {
+  console.log("makeTexture");
+  var texture = gl.createTexture();
+  gl.bindTexture(gl.TEXTURE_2D, texture);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+  return texture;
+}
+
+function updateTexture(gl,texture,source) {
+  // console.log("updateTexture");
+  gl.bindTexture(gl.TEXTURE_2D, texture);
+  gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
+  gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, source);
 }
