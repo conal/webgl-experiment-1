@@ -145,7 +145,7 @@ function install_effect(canvas,effect) {
                 break;
               case "video":
                   // console.log("Rendering video widget.");
-                  var video = $("<video autoplay muted loop=true controls src=media/creek.mov />");
+                  var video = $("<video autoplay muted loop=true controls src=media/creek.mp4 />");
                   var texture = makeTexture(gl);
                   // Texture unit 0 for now. TODO: reserve a unit and use in updateTexture.
                   gl.uniform1i(location, 0);
