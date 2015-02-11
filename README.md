@@ -13,6 +13,7 @@ Directions:
 
 *   If running locally, start up a web server.
     I `cd` to the project directory and do "`python -m SimpleHTTPServer`".
+    This requirement comes from how we load effects.
 *   View http://localhost:8000 in a browser.
 
 
