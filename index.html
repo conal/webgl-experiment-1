@@ -21,13 +21,12 @@
 </html>
 
 <script type="text/javascript">
-  var effects = ["turningWebcam", "turningWebcam",
-                 "checker", "diskHalfSpace",
+  var effects = ["checker", "diskHalfSpace",
                  "diskChecker/1", "diskChecker/2", "diskChecker/3",
                  "diskChecker/4", "diskChecker/5", "diskChecker/6",
-                 "diskChecker/7", "diskChecker/8", "diskChecker/9"
-                 /*
-                 */
+                 "diskChecker/7", "diskChecker/8", "diskChecker/9",
+                 "turningWebcam", "turningWebcam"
+                 // Bug: only one webcam effect works in preview
                  ];
   var master = $("<canvas width=150 height=150/>"); // to be cloned
   var effectCanvas = function (effect) {
