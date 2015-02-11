@@ -17,4 +17,6 @@ Directions:
 
 *   When the thumbnails page contains more than one webcam demo, only one works.
     Maybe one is clobbering the other, via a bug related to JS scoping.
+    Oh! It works in Chrome, after asking a second time for camera access.
+
 
