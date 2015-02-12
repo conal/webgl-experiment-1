@@ -1,4 +1,4 @@
-Some experiments with WebGL, toward resurrecting Shady.
+# Some experiments with WebGL, toward resurrecting Shady
 
 See [the demo](http://conal.github.io/webgl-experiment-1/).
 
