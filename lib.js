@@ -309,11 +309,10 @@ function updateTexture(gl,texture,source) {
   gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, source);
 }
 
-
 $(function () {
     navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia ||
                              navigator.mozGetUserMedia || navigator.msGetUserMedia;
 
     if (!navigator.getUserMedia)
-       alert('getUserMedia not supported in this browser.');
+       console.log('getUserMedia not supported in this browser.');
 });

@@ -23,20 +23,22 @@
 </html>
 
 <script type="text/javascript">
-  var effects = ["checker", "diskHalfSpace",
-                 "diskChecker/1", "diskChecker/2", "diskChecker/3",
-                 "diskChecker/4", "diskChecker/5", "diskChecker/6",
-                 "diskChecker/7", "diskChecker/8", "diskChecker/9",
-                 "turningWebcam", "turningWebcam"
-                 // Bug: only one webcam effect works in preview
-                 ];
-  var master = $("<canvas width=150 height=150/>"); // to be cloned
-  var effectCanvas = function (effect) {
-    var c = master.clone();
-    install_effect(c[0],effect);  // Ignore returned GUI for thumbnails
-    return c;
-  }
   $(document).ready(function () {  // or $(function () { ... })
+    var effects = ["checker", "diskHalfSpace",
+                   "diskChecker/1", "diskChecker/2", "diskChecker/3",
+                   "diskChecker/4", "diskChecker/5", "diskChecker/6",
+                   "diskChecker/7", "diskChecker/8", "diskChecker/9",
+                   // "turningWebcam"
+                   // Bug: only one webcam effect works in preview
+                   ];
+    if (navigator.getUserMedia)
+        effects.push("turningWebcam");
+    var master = $("<canvas width=150 height=150/>"); // to be cloned
+    var effectCanvas = function (effect) {
+      var c = master.clone();
+      install_effect(c[0],effect);  // Ignore returned GUI for thumbnails
+      return c;
+    }
     // Add effect thumbnail canvases, each wrapped in a hyperlink.
     // For simplicity and efficiency, add in bulk.
     $("body").append($.map(effects,function(effect) {
