@@ -1,4 +1,4 @@
-# Some experiments with WebGL, toward resurrecting Shady
+This project is an experiment with WebGL, toward resurrecting [Shady](https://github.com/conal/shady-gen).
 
 See [the demo](http://conal.github.io/webgl-experiment-1/).
 
