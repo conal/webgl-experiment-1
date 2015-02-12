@@ -1,5 +1,7 @@
 Some experiments with WebGL, toward resurrecting Shady.
 
+See [the demo](http://conal.github.io/webgl-experiment-1/).
+
 Tested under:
 
 *   Firefox 35.0.1:
