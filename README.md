@@ -16,7 +16,6 @@ Directions:
     This requirement comes from how we load effects.
 *   View http://localhost:8000 in a browser.
 
-
 ## Bugs
 
 *   When the thumbnails page contains more than one webcam demo, only one works.
@@ -24,6 +23,4 @@ Directions:
     Oh! It works in Chrome, after asking a second time for camera access.
 *   It's tedious to keep re-approving camera access.
 *   Rendering seems to slow down over time, especially with video.
-
-
 
