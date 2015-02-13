@@ -26,9 +26,6 @@ Tested under:
 *   It's tedious to keep re-approving camera access.
 *   Rendering seems to slow down over time, especially with video.
 *   Video aspect ratio doesn't get preserved.
-*   Widgets don't work on iOS.
-    Maybe I need [jQuery mobile](http://jquerymobile.com/).
-    (See [downloads](http://jquerymobile.com/download/).)
 
 ## Other issues
 
@@ -40,3 +37,10 @@ Tested under:
 *   Generate shaders and widgets from Haskell via Shady and [tangible values](http://www.haskell.org/haskellwiki/TV).
 *   Load images.
 *   3D, preferably with dynamic tessellation.
+
+## Updates
+
+*   2014-02-13: Use [Touch Punch](http://touchpunch.furf.com/) so that sliders work on touch-based devices, including iOS.
+    I haven't tested with Android.
+    If you try it, please let me know.
+    I first tried [jQuery mobile](http://jquerymobile.com/), but the graphics get hidden behind a big white area.
