@@ -11,7 +11,7 @@ Tested under:
     "getUserMedia not supported in this browser", so webcam examples don't work.
 *   Chrome 40.0.2214.111 (64-bit).
 
-Directions:
+## Directions
 
 *   If running locally, start up a web server.
     I `cd` to the project directory and do "`python -m SimpleHTTPServer`".
@@ -25,4 +25,18 @@ Directions:
     Oh! It works in Chrome, after asking a second time for camera access.
 *   It's tedious to keep re-approving camera access.
 *   Rendering seems to slow down over time, especially with video.
+*   Video aspect ratio doesn't get preserved.
+*   Widgets don't work on iOS.
+    Maybe I need [jQuery mobile](http://jquerymobile.com/).
+    (See [downloads](http://jquerymobile.com/download/).)
 
+## Other issues
+
+*   "Error: WebGL: Drawing to a destination rect smaller than the viewport rect."
+    I think I can fix by using two independent scaling factors for X and Y, rather than the single factor I have now.
+
+## To do
+
+*   Generate shaders and widgets from Haskell via Shady and [tangible values](http://www.haskell.org/haskellwiki/TV).
+*   Load images.
+*   3D, preferably with dynamic tessellation.
