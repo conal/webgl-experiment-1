@@ -96,8 +96,9 @@ function install_effect(canvas,effect) {
         queue_draw();
     }
 
-    var fpsElem = $("#fps")[0];
-    // console.log("fpsElem: "+fpsElem);
+    var fpsElems = $("#fps");
+    fpsElems.css("opacity",0);
+    // console.log("fpsElems: "+fpsElems);
 
     var _position, _time, _zoom, _pan; // Attributes & uniforms
     var program = null;
@@ -118,12 +119,6 @@ function install_effect(canvas,effect) {
         _position = gl.getAttribLocation(program, "position");
         _time = gl.getUniformLocation(program, "time");
         // if (!_time) console.log("non-animated");
-        /*
-        if (fpsElem && !_time) {
-            console.log("removing fps.");
-            fpsElem.remove();
-        }
-        */
         _zoom = gl.getUniformLocation(program, "zoom");
         _pan  = gl.getUniformLocation(program, "pan");
         gl.enableVertexAttribArray(_position);
@@ -216,17 +211,19 @@ function install_effect(canvas,effect) {
         var seconds = milliseconds/1000,
             elapsed = seconds - lastSeconds;
         if (seconds != lastSeconds) {
-            if (fpsElem) {
+            if (fpsElems.length > 0) {
                 // console.log("elapsed = " + elapsed);
                 var thisFPS = 1/elapsed;
                 var fpsWeight = 0.1; // weight of new fps
                 lastFPS = thisFPS * fpsWeight + lastFPS * (1 - fpsWeight);
-                
-                if (lastSeconds == 0) {
-                    fpsElem.style.visibility = "hidden";
-                } else {
-                    fpsElem.style.visibility = "visible";
-                    fpsElem.innerHTML = "fps: " + Math.round(lastFPS);
+                var roundFPS = Math.round(lastFPS);
+                if (roundFPS > 0) {
+                    fpsElems.stop();  // in case already animating
+                    fpsElems.css("opacity",1);
+                    fpsElems.fadeTo("slow",0);
+                    // console.log("lastFPS = " + lastFPS);
+                    if (roundFPS != 0)
+                        fpsElems.html("fps: " + roundFPS);
                 }
             }
             lastSeconds = seconds;
