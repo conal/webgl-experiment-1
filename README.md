@@ -49,6 +49,8 @@ Tested under:
         I first tried [jQuery mobile](http://jquerymobile.com/), but the graphics get hidden behind a big white area.
     *   With input widgets, rendering no longer slows down over time.
     *   Display frames/second (FPS), in part to verify the progressive slow-down and the fix (when I find it).
-        Inserted in element with id of "fps", if present and if animated.
-        Used in effect.html (full-window effect) but not index.html (thumbnails).
+        *   Inserted in element(s) with id of "fps", if present.
+        *   Ephemeral, fading out gradually after displaying, resetting on each redraw.
+        *   Added a non-animated example with an interaction widget to show off the ephemeral FPS display.
+        *   Used in effect.html (full-window effect) but not index.html (thumbnails).
 
