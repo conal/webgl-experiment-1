@@ -96,6 +96,9 @@ function install_effect(canvas,effect) {
         queue_draw();
     }
 
+    var fpsElem = $("#fps")[0];
+    // console.log("fpsElem: "+fpsElem);
+
     var _position, _time, _zoom, _pan; // Attributes & uniforms
     var program = null;
     var choose_effect = function (frag_source) {
@@ -115,6 +118,10 @@ function install_effect(canvas,effect) {
         _position = gl.getAttribLocation(program, "position");
         _time = gl.getUniformLocation(program, "time");
         // if (!_time) console.log("non-animated");
+        if (fpsElem && !_time) {
+            console.log("removing fps.");
+            fpsElem.remove();
+        }
         _zoom = gl.getUniformLocation(program, "zoom");
         _pan  = gl.getUniformLocation(program, "pan");
         gl.enableVertexAttribArray(_position);
@@ -197,10 +204,20 @@ function install_effect(canvas,effect) {
         // return (function () { return $.map(frag.widgets,render_widget); });
         return $.map(frag.widgets,render_widget);
     };
-
-    var redraw = function(t) {
+    var lastSeconds=0,lastFPS=0;
+    var pendingRedraw = false;
+    // TODO: maybe always run the redraw loop, but use a needsRedraw flag.
+    // Probably okay for a single effect, but what about thumbnails?
+    var redraw = function (milliseconds) {
+        // console.log("redraw. pending = " + pendingRedraw);
+        pendingRedraw = false;
         if (_time) {
-            gl.uniform1f(_time, t/1000);
+            var seconds = milliseconds/1000,
+                elapsed = seconds - lastSeconds;
+            if (seconds != lastSeconds) {
+                gl.uniform1f(_time, seconds);
+                lastSeconds = seconds;
+            }
             queue_draw();
         }
         // gl.clear(gl.COLOR_BUFFER_BIT);
@@ -211,7 +228,14 @@ function install_effect(canvas,effect) {
         gl.drawElements(gl.TRIANGLES, 6, gl.UNSIGNED_SHORT, 0);
         // gl.flush();
     };
-    var queue_draw = function() { window.requestAnimationFrame(redraw); }
+    var queue_draw = function () {
+        if (!pendingRedraw) {
+            pendingRedraw = true;
+            window.requestAnimationFrame(redraw);
+        } else {
+            // console.log("queue_draw: already pending");
+        }
+    }
     var pixel_size; // in GL units
 
     canvas.onresize = function () {

@@ -24,7 +24,6 @@ Tested under:
     Maybe one is clobbering the other, via a bug related to JS scoping.
     Oh! It works in Chrome, after asking a second time for camera access.
 *   It's tedious to keep re-approving camera access.
-*   Rendering seems to slow down over time, especially with video.
 *   Video aspect ratio doesn't get preserved.
 
 ## Other issues
@@ -40,7 +39,13 @@ Tested under:
 
 ## Updates
 
-*   2014-02-13: Use [Touch Punch](http://touchpunch.furf.com/) so that sliders work on touch-based devices, including iOS.
-    I haven't tested with Android.
-    If you try it, please let me know.
-    I first tried [jQuery mobile](http://jquerymobile.com/), but the graphics get hidden behind a big white area.
+*   2014-02-13:
+    *   Use [Touch Punch](http://touchpunch.furf.com/) so that sliders work on touch-based devices, including iOS.
+        I haven't tested with Android.
+        If you try it, please let me know.
+        I first tried [jQuery mobile](http://jquerymobile.com/), but the graphics get hidden behind a big white area.
+    *   With input widgets, rendering no longer slows down over time.
+    *   Display frames/second (FPS), in part to verify the progressive slow-down and the fix (when I find it).
+        Inserted in element with id of "fps", if present and if animated.
+        Used in effect.html (full-window effect) but not index.html (thumbnails).
+

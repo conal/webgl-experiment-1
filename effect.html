@@ -15,7 +15,7 @@
     <script type="text/javascript" src="lib.js"></script>
     <!-- <script type="application/javascript;version=1.7" src="lib.js"></script> -->
     <style>
-       div.gui { 
+       #gui { 
            position:fixed;
            width: 250px;
            top:20px;right:50px;
@@ -23,19 +23,34 @@
            background: rgba(255,255,200,0.75);
            border-radius: 7px;
        }
+       #fps { 
+           position:fixed;
+           width: 8ex; text-align: center;
+           height: 1.7ex;
+           font-size:140%;
+           color: blue;
+           top:20px;left:50px;
+           padding:5px; padding-bottom:6px;
+           background: rgba(255,255,200,0.75);
+           border: solid rgba(255,255,200,0.75);
+           border-radius: 7px;
+       }
        .center { margin-left: auto; margin-right: auto;  display: block }
        canvas { z-index: -1; } /* below GUI */
        video { width:30%; opacity:0.75; padding:0; }
        .ui-slider-horizontal { height: 0.25em; }
        .ui-slider .ui-slider-handle { height: 1em; top: -.4em; }
-       .widget-label { font-size:140%; color: rgba(20,20,255,0.85);
+       .widget-label, #fps { color: rgba(20,20,255,0.85); }
+       .widget-label { font-size:140%;
            padding-left:5px; padding-top: 3px; padding-bottom:3px;
            text-align: right; margin-right:0.5em; }
 
     </style>
   </head>
-  <body style="margin:0px"> <div class=gui></div> </body>
-
+  <body style="margin:0px">
+  <div id=gui></div>
+  <div id=fps></div>
+  </body>
   <script>
     $(document).ready(function () {  // or $(function () { ... })
         // TODO: finish converting to jQuery
@@ -46,9 +61,9 @@
         $("body").append(canvas);
         var widgets = install_effect(canvas,effect);
         if (widgets.length > 0)
-           $(".gui").append(widgets);
+           $("#gui").append(widgets);
         else
-           $(".gui").remove();
+           $("#gui").remove();
         // TODO: conditionally add instead of remove.
         $(window).resize (function() {
             canvas.width = window.innerWidth;
