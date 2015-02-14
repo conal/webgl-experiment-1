@@ -118,10 +118,12 @@ function install_effect(canvas,effect) {
         _position = gl.getAttribLocation(program, "position");
         _time = gl.getUniformLocation(program, "time");
         // if (!_time) console.log("non-animated");
+        /*
         if (fpsElem && !_time) {
             console.log("removing fps.");
             fpsElem.remove();
         }
+        */
         _zoom = gl.getUniformLocation(program, "zoom");
         _pan  = gl.getUniformLocation(program, "pan");
         gl.enableVertexAttribArray(_position);
@@ -211,22 +213,35 @@ function install_effect(canvas,effect) {
     var redraw = function (milliseconds) {
         // console.log("redraw. pending = " + pendingRedraw);
         pendingRedraw = false;
-        if (_time) {
-            var seconds = milliseconds/1000,
-                elapsed = seconds - lastSeconds;
-            if (seconds != lastSeconds) {
-                gl.uniform1f(_time, seconds);
-                lastSeconds = seconds;
+        var seconds = milliseconds/1000,
+            elapsed = seconds - lastSeconds;
+        if (seconds != lastSeconds) {
+            if (fpsElem) {
+                // console.log("elapsed = " + elapsed);
+                var thisFPS = 1/elapsed;
+                var fpsWeight = 0.1; // weight of new fps
+                lastFPS = thisFPS * fpsWeight + lastFPS * (1 - fpsWeight);
+                
+                if (lastSeconds == 0) {
+                    fpsElem.style.visibility = "hidden";
+                } else {
+                    fpsElem.style.visibility = "visible";
+                    fpsElem.innerHTML = "fps: " + Math.round(lastFPS);
+                }
             }
-            queue_draw();
+            lastSeconds = seconds;
+            if (_time) {
+                gl.uniform1f(_time, seconds);
+                queue_draw();
+            }
+            // gl.clear(gl.COLOR_BUFFER_BIT);
+            // gl.clear(0);
+            gl.bindBuffer(gl.ARRAY_BUFFER, TRIANGLE_VERTEX);
+            gl.vertexAttribPointer(_position, 2, gl.FLOAT, false,4*2,0) ;
+            gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, TRIANGLE_FACES);
+            gl.drawElements(gl.TRIANGLES, 6, gl.UNSIGNED_SHORT, 0);
+            // gl.flush();
         }
-        // gl.clear(gl.COLOR_BUFFER_BIT);
-        // gl.clear(0);
-        gl.bindBuffer(gl.ARRAY_BUFFER, TRIANGLE_VERTEX);
-        gl.vertexAttribPointer(_position, 2, gl.FLOAT, false,4*2,0) ;
-        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, TRIANGLE_FACES);
-        gl.drawElements(gl.TRIANGLES, 6, gl.UNSIGNED_SHORT, 0);
-        // gl.flush();
     };
     var queue_draw = function () {
         if (!pendingRedraw) {
