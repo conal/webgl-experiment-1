@@ -20,19 +20,22 @@ Tested under:
 
 ## Bugs
 
-*   When the thumbnails page contains more than one webcam demo, only one works.
-    Maybe one is clobbering the other, via a bug related to JS scoping.
-    Oh! It works in Chrome, after asking a second time for camera access.
-*   It's tedious to keep re-approving camera access.
+*   In Firefox and Safari, when the thumbnails page contains more than one webcam demo, only one works.
+    Okay in Chrome, after asking a second time for camera access.
 *   Video aspect ratio doesn't get preserved.
+*   Progressive slow-down is back, even without widgets.
+    Takes longer to appear.
+    Oddly, the FPS counter stays roughly constant even as the animation appears to get jerkier.
 
 ## Other issues
 
+*   It's tedious to keep re-approving camera access.
 *   "Error: WebGL: Drawing to a destination rect smaller than the viewport rect."
     I think I can fix by using two independent scaling factors for X and Y, rather than the single factor I have now.
 
 ## To do
 
+*   Make touch-based infinite panning work on mobile.
 *   Generate shaders and widgets from Haskell via Shady and [tangible values](http://www.haskell.org/haskellwiki/TV).
 *   Load images.
 *   3D, preferably with dynamic tessellation.
