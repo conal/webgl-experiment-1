@@ -1,6 +1,6 @@
 This project is an experiment with WebGL, toward resurrecting [Shady](https://github.com/conal/shady-gen).
 
-See [the demo](http://conal.github.io/webgl-experiment-1/).
+[Run the project in your browser.](http://conal.github.io/webgl-experiment-1/)
 
 Tested under:
 
