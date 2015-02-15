@@ -15,6 +15,8 @@ function get_file_text(path) {
                   },
          async: false,
     });
+    if (!content)
+        throw ("Couldn't find file " + path);
     return content;
 };
 
@@ -219,7 +221,7 @@ function install_effect(canvas,effect) {
                 var roundFPS = Math.round(lastFPS);
                 if (roundFPS > 0) {
                     fpsElems.stop();  // in case already animating
-                    fpsElems.css("opacity",1);
+                    fpsElems.css("opacity",50);
                     fpsElems.fadeTo("slow",0);
                     // console.log("lastFPS = " + lastFPS);
                     if (roundFPS != 0)

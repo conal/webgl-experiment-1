@@ -58,7 +58,10 @@
         // console.log("effect: " + effect);
         var canvas = $("<canvas/>")[0];
         $("body").append(canvas);
-        var widgets = install_effect(canvas,effect);
+        var widgets;
+        try {
+            widgets = install_effect(canvas,effect);
+        } catch (e) { alert(e); }
         if (widgets.length > 0)
            $("#gui").append(widgets);
         else
