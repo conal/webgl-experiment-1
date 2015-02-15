@@ -35,8 +35,9 @@ Tested under:
 
 ## To do
 
-*   Make touch-based infinite panning work on mobile.
 *   Generate shaders and widgets from Haskell via Shady and [tangible values](http://www.haskell.org/haskellwiki/TV).
+*   Anti-aliasing, e.g., via progressive stochastic super-sampling, as in Pan & Pajama.
+*   Make touch-based infinite panning work on mobile.
 *   Load images.
 *   3D, preferably with dynamic tessellation.
 
