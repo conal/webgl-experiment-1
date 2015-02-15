@@ -16,35 +16,34 @@
     <!-- <script type="application/javascript;version=1.7" src="lib.js"></script> -->
     <style>
        #gui { 
-           position:fixed;
            width: 250px;
            top:20px;right:20px;
-           padding:5px;padding-bottom:15px;
        }
        #fps { 
-           position:fixed;
-           width: 8ex; text-align: center;
-           height: 1.7ex;
-           font-size:140%;
-           color: blue;
-           top:20px;left:20px;
-           padding:5px; padding-bottom:8px;
+           width: 8ex;
+           text-align: center;
+           bottom:20px;left:20px;
        }
        #gui, #fps {
+           position:fixed;
+           padding:5px; /* padding-bottom:13px; */
            background: rgba(255,255,200,0.75);
            border: solid 1px rgba(255,255,200,0.75);
            border-radius: 7px;
        }
-       .center { margin-left: auto; margin-right: auto;  display: block }
+       .widget-label, #fps { color: rgba(20,20,255,0.85); font-size:140%; }
+       .widget-label {
+           padding-left:5px; padding-bottom:3px;
+           text-align: right; margin-right:0.5em;
+       }
        canvas { z-index: -1; } /* below GUI */
        video { width:30%; opacity:0.75; padding:0; }
-       .ui-slider-horizontal { height: 0.25em; }
+       .ui-slider-horizontal {
+           height: 0.25em;
+           margin-bottom:10px; margin-top:5px;
+       }
        .ui-slider .ui-slider-handle { height: 1em; top: -.4em; }
-       .widget-label, #fps { color: rgba(20,20,255,0.85); }
-       .widget-label { font-size:140%;
-           padding-left:5px; padding-top: 3px; padding-bottom:3px;
-           text-align: right; margin-right:0.5em; }
-
+       .center { margin-left: auto; margin-right: auto;  display: block }
     </style>
   </head>
   <body style="margin:0px">
