@@ -14,7 +14,7 @@
     <script src="external/jquery.ui.touch-punch.min.js"></script>
     <script type="text/javascript" src="lib.js"></script>
     <style>
-       #gui { 
+       .gui { 
            width: 250px;
            top:20px;right:20px;
        }
@@ -23,7 +23,7 @@
            text-align: center;
            bottom:20px;left:20px;
        }
-       #gui, #fps {
+       .gui, #fps {
            position:fixed;
            padding:5px;
            background: rgba(255,255,200,0.75);
@@ -42,13 +42,12 @@
            margin-bottom:10px; margin-top:5px;
        }
        .ui-slider .ui-slider-handle { height: 1em; top: -.4em; border:0.75px solid; }
-       .widget-label, .ui-slider, .ui-slider-handle { opacity: 0.75; }
+       .widget-label, .ui-slider, .ui-slider-handle { opacity: 0.8; }
        .center { margin-left: auto; margin-right: auto;  display: block }
     </style>
   </head>
   <body style="margin:0px">
-  <div id=gui></div>
-  <div id=fps></div>
+    <div id=fps></div>
   </body>
   <script>
     $(document).ready(function () {  // or $(function () { ... })
@@ -63,10 +62,7 @@
             widgets = install_effect(canvas,effect);
         } catch (e) { alert(e); }
         if (widgets.length > 0)
-           $("#gui").append(widgets);
-        else
-           $("#gui").remove();
-        // TODO: conditionally add instead of remove.
+            $("body").append($("<div class=gui/>").append(widgets));
         $(window).resize (function() {
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
