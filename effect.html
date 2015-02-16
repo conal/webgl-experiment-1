@@ -13,7 +13,6 @@
     <link href="https://code.jquery.com/ui/1.11.1/themes/smoothness/jquery-ui.css" rel="stylesheet">
     <script src="external/jquery.ui.touch-punch.min.js"></script>
     <script type="text/javascript" src="lib.js"></script>
-    <!-- <script type="application/javascript;version=1.7" src="lib.js"></script> -->
     <style>
        #gui { 
            width: 250px;
@@ -26,12 +25,12 @@
        }
        #gui, #fps {
            position:fixed;
-           padding:5px; /* padding-bottom:13px; */
+           padding:5px;
            background: rgba(255,255,200,0.75);
            border: solid 1px rgba(255,255,200,0.75);
            border-radius: 7px;
        }
-       .widget-label, #fps { color: rgba(20,20,255,0.85); font-size:140%; }
+       .widget-label, #fps { color: rgb(20,20,255); font-size:140%; }
        .widget-label {
            padding-left:5px; padding-bottom:3px;
            text-align: right; margin-right:0.5em;
@@ -42,7 +41,8 @@
            height: 0.25em;
            margin-bottom:10px; margin-top:5px;
        }
-       .ui-slider .ui-slider-handle { height: 1em; top: -.4em; }
+       .ui-slider .ui-slider-handle { height: 1em; top: -.4em; border:0.75px solid; }
+       .widget-label, .ui-slider, .ui-slider-handle { opacity: 0.75; }
        .center { margin-left: auto; margin-right: auto;  display: block }
     </style>
   </head>
