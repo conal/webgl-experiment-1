@@ -51,24 +51,22 @@
   </body>
   <script>
     $(document).ready(function () {  // or $(function () { ... })
-        // TODO: finish converting to jQuery
-        var effect = location.search.slice(1);
-        document.title = effect;
-        // console.log("effect: " + effect);
-        var canvas = $("<canvas/>")[0];
-        $("body").append(canvas);
-        var widgets;
         try {
-            widgets = install_effect(canvas,effect);
+          var effect = location.search.slice(1);
+          document.title = effect;
+          // console.log("effect: " + effect);
+          var canvas = $("<canvas/>")[0];
+          $("body").append(canvas);
+          var widgets = install_effect(canvas,effect);
+          if (widgets.length > 0)
+              $("body").append($("<div class=gui/>").append(widgets));
+          $(window).resize (function() {
+              canvas.width = window.innerWidth;
+              canvas.height = window.innerHeight;
+              canvas.onresize();
+          });
+          $(window).trigger("resize");
         } catch (e) { alert(e); }
-        if (widgets.length > 0)
-            $("body").append($("<div class=gui/>").append(widgets));
-        $(window).resize (function() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-            canvas.onresize();
-        });
-        $(window).trigger("resize");
     });
   </script>
 
