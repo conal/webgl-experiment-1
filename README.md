@@ -36,6 +36,9 @@ Tested under:
 ## To do
 
 *   Generate shaders and widgets from Haskell via Shady and [tangible values](http://www.haskell.org/haskellwiki/TV).
+*   Design and implement direct mouse-based interaction with effects.
+    For instance, move a lens around by mouse-dragging it.
+    Have a way to select which effect is listening to mouse actions.
 *   Anti-aliasing, e.g., via progressive stochastic super-sampling, as in Pan & Pajama.
 *   Make touch-based infinite panning work on mobile.
 *   Load images.
