@@ -207,6 +207,7 @@ function install_effect(canvas,effect) {
     var pendingRedraw = false;
     // TODO: maybe always run the redraw loop, but use a needsRedraw flag.
     // Probably okay for a single effect, but what about thumbnails?
+    var drawn = false;   // has been drawn at least once
     var redraw = function (milliseconds) {
         // console.log("redraw. pending = " + pendingRedraw);
         pendingRedraw = false;
@@ -219,14 +220,15 @@ function install_effect(canvas,effect) {
                 var fpsWeight = 0.1; // weight of new fps
                 lastFPS = thisFPS * fpsWeight + lastFPS * (1 - fpsWeight);
                 var roundFPS = Math.round(lastFPS);
-                if (roundFPS > 0) {
+                if (drawn) {
                     fpsElems.stop();  // in case already animating
                     fpsElems.css("opacity",1);
                     fpsElems.fadeTo(1000,0);
                     // console.log("lastFPS = " + lastFPS);
                     if (roundFPS != 0)
                         fpsElems.html("fps: " + roundFPS);
-                }
+                } else
+                    drawn = true;
             }
             lastSeconds = seconds;
             if (_time) {
